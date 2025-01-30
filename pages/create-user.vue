@@ -67,7 +67,6 @@ const value = computed({
 });
 
 const onSubmit = handleSubmit((values) => {
-  console.log(values);
   toast({
     class: cn("top-4 right-1/2 flex fixed w-30"),
     title: "Uh oh! Something went wrong.",

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { userLogout } from "~/composables/useAuth";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -20,20 +21,22 @@ import {
   Menu,
   Package,
   Package2,
+  PanelLeft,
   Search,
   ShoppingCart,
-  Users,
-  PanelLeft,
-  Moon,
-  Sun,
   SunMoon,
+  Users,
 } from "lucide-vue-next";
+import type { IUser } from "~/types/IUser";
 
 type Theme = "light" | "dark";
 
 const setColorScheme = (newTheme: Theme) => {
   useColorMode().preference = newTheme;
 };
+
+const user = useState<IUser>("user");
+const logout = userLogout;
 </script>
 
 <template>
@@ -122,6 +125,7 @@ const setColorScheme = (newTheme: Theme) => {
         setColorScheme($colorMode.preference == 'dark' ? 'light' : 'dark')
       "
     />
+    <h3>{{ user ? user.username : "Guest" }}</h3>
     <DropdownMenu>
       <DropdownMenuTrigger as-child>
         <Button variant="secondary" size="icon" class="rounded-full">
@@ -135,7 +139,7 @@ const setColorScheme = (newTheme: Theme) => {
         <DropdownMenuItem>Settings</DropdownMenuItem>
         <DropdownMenuItem>Support</DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>Logout</DropdownMenuItem>
+        <DropdownMenuItem @click="logout">Logout</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   </header>

@@ -1,14 +1,14 @@
 import bcrypt from "bcrypt";
-import { createUser } from "~/server/repositories/userRepository";
+import { getUser } from "~/server/repositories/userRepository";
 import { makeSession } from "~/server/services/sessionService";
-import { doesUserExists } from "~/server/services/userService";
+import { doesUserExistsEmail } from "~/server/services/userService";
 import { IUser } from "~/types/IUser";
 
 export default defineEventHandler(async (event) => {
   const body: IUser = await readBody(event);
-  const { username, email, password } = body;
+  const { email, password } = body;
 
-  const existsUser = await doesUserExists(email, username);
+  const existsUser = await doesUserExistsEmail(email);
 
   if (existsUser.value) {
     throw createError({
@@ -19,13 +19,12 @@ export default defineEventHandler(async (event) => {
 
   const encryptedPassword = await bcrypt.hash(password, 10);
 
-  const userData: IUser = {
-    username,
+  const userData: { email: string; password: string } = {
     email,
     password: encryptedPassword,
   };
 
-  const user = await createUser(userData);
+  const user = await getUser(userData.email);
 
   return await makeSession(user, event);
 });
