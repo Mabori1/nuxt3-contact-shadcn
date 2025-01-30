@@ -1,30 +1,26 @@
 import bcrypt from "bcrypt";
 import { getUser } from "~/server/repositories/userRepository";
-import { makeSession } from "~/server/services/sessionService";
-import { doesUserExistsEmail } from "~/server/services/userService";
+import {
+  makeSession,
+  removeSessionByUserId,
+} from "~/server/services/sessionService";
 import { IUser } from "~/types/IUser";
 
 export default defineEventHandler(async (event) => {
   const body: IUser = await readBody(event);
   const { email, password } = body;
 
-  const existsUser = await doesUserExistsEmail(email);
+  const existsUser = await getUser(email);
+  const isPasswordValid = await bcrypt.compare(password, existsUser.password);
 
-  if (existsUser.value) {
+  if (!existsUser || !isPasswordValid) {
     throw createError({
-      statusCode: 422,
-      statusMessage: "User already exists",
+      statusCode: 404,
+      statusMessage: "User not found",
     });
   }
 
-  const encryptedPassword = await bcrypt.hash(password, 10);
+  await removeSessionByUserId(existsUser.id);
 
-  const userData: { email: string; password: string } = {
-    email,
-    password: encryptedPassword,
-  };
-
-  const user = await getUser(userData.email);
-
-  return await makeSession(user, event);
+  return await makeSession(existsUser, event);
 });

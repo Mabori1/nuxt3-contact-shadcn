@@ -3,6 +3,7 @@ import { IUser } from "~/types/IUser";
 import { H3Event, EventHandlerRequest } from "h3";
 import {
   createSession,
+  deleteSessionByUserId,
   getSessionByAuthToken,
 } from "../repositories/sessionRepository";
 
@@ -28,4 +29,8 @@ export async function getUserBySessionToken(token: string): Promise<IUser> {
     throw new Error("Session not found");
 
   return session.user;
+}
+
+export async function removeSessionByUserId(id: number): Promise<void> {
+  await deleteSessionByUserId(id);
 }

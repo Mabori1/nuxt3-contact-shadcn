@@ -42,7 +42,7 @@ const { isFieldDirty, handleSubmit, resetForm } = useForm({
 });
 
 const onSubmit = handleSubmit(async (values) => {
-  // await registerWithEmail(values);
+  await loginWithEmail(values);
 
   toast({
     title: "You submitted the following values:",
@@ -53,13 +53,18 @@ const onSubmit = handleSubmit(async (values) => {
     ),
   });
 });
+
+const router = useRouter();
+const goToRegister = () => {
+  router.push("/register");
+};
 </script>
 
 <template>
   <div class="mx-4 flex h-screen items-center justify-center">
     <Card class="w-[450px]">
       <CardHeader class="space-y-1">
-        <CardTitle class="text-2xl"> Авторизация аккаунта </CardTitle>
+        <CardTitle class="text-2xl"> Авторизация </CardTitle>
       </CardHeader>
       <CardContent class="grid gap-2">
         <form class="items-center space-y-6" @submit="onSubmit">
@@ -99,9 +104,12 @@ const onSubmit = handleSubmit(async (values) => {
             </FormItem>
           </FormField>
 
-          <div class="flex justify-center gap-4">
-            <Button @click="resetForm"> Сброс </Button>
-            <Button type="submit"> Авторизоваться </Button>
+          <div class="flex flex-col items-center gap-2">
+            <Button @click="goToRegister" variant="link">Нет аккаунта?</Button>
+            <div class="flex justify-center gap-4">
+              <Button @click="resetForm"> Сброс </Button>
+              <Button type="submit"> Авторизоваться </Button>
+            </div>
           </div>
         </form>
       </CardContent>

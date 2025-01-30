@@ -14,6 +14,6 @@ const logout = userLogout;
 </script>
 <template>
   <div>
-    {{ user.username }}
+    {{ user && user.username }}
   </div>
 </template>

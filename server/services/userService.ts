@@ -13,7 +13,7 @@ type RegistrationError = {
   usernameError?: string;
 };
 
-type RegistrationErrorEmail = {
+type LoginError = {
   emailError?: string;
 };
 
@@ -50,18 +50,15 @@ export async function doesUserExists(
   };
 }
 
-export async function doesUserExistsEmail(email: string): Promise<existsCheck> {
+export async function doesNotUserExists(email: string): Promise<existsCheck> {
   const hasEmail = await getUserByEmail(email);
 
   const emailExists = hasEmail !== null;
 
-  const errors: RegistrationError = {};
+  const errors: LoginError = {};
 
-  if (emailExists) {
-    errors.emailError = `This email, ${email}, is already registered`;
-  }
-
-  if (emailExists) {
+  if (!emailExists) {
+    errors.emailError = `This email, ${email}, is not found`;
     const message = JSON.stringify(errors);
     return {
       value: true,

@@ -13,4 +13,7 @@ export default defineNuxtConfig({
     prefix: "",
     componentDir: "./components/ui",
   },
+  prisma: {
+    autoSetupPrisma: true,
+  },
 });

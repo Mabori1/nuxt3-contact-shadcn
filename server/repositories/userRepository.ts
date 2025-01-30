@@ -1,4 +1,4 @@
-import prisma from "~/prisma/client";
+import prisma from "~/lib/prisma";
 import { IUser } from "~/types/IUser";
 
 export async function getUserByEmail(email: string) {

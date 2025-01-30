@@ -74,7 +74,7 @@ const onSubmit = handleSubmit(async (values) => {
   <div class="mx-4 flex h-screen items-center justify-center">
     <Card class="w-[450px]">
       <CardHeader class="space-y-1">
-        <CardTitle class="text-2xl"> Регистрация аккаунта </CardTitle>
+        <CardTitle class="text-2xl"> Регистрация </CardTitle>
       </CardHeader>
       <CardContent class="grid gap-2">
         <form class="items-center space-y-6" @submit="onSubmit">
@@ -149,9 +149,14 @@ const onSubmit = handleSubmit(async (values) => {
               <FormMessage />
             </FormItem>
           </FormField>
-          <div class="flex justify-center">
-            <Button @click="resetForm"> Сброс </Button>
-            <Button type="submit"> Создать </Button>
+          <div class="flex flex-col items-center gap-2">
+            <Button @click="useRouter().push('/login')" variant="link"
+              >Есть аккаунт?</Button
+            >
+            <div class="flex justify-center gap-4">
+              <Button @click="resetForm"> Сброс </Button>
+              <Button type="submit"> Создать </Button>
+            </div>
           </div>
         </form>
       </CardContent>

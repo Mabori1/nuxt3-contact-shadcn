@@ -1,4 +1,4 @@
-import prisma from "~/prisma/client";
+import prisma from "~/lib/prisma";
 import { ISession } from "~/types/ISession";
 import { IUser } from "~/types/IUser";
 
@@ -12,6 +12,12 @@ export async function createSession(data: ISession): Promise<ISession> {
       userId: data.userId,
       authToken: data.authToken,
     },
+  });
+}
+
+export async function deleteSessionByUserId(userId: number) {
+  await prisma.session.deleteMany({
+    where: { userId },
   });
 }
 
