@@ -1,10 +1,8 @@
 <script setup lang="ts"></script>
 <template>
-  <div
-    class="dark:bg-darktheme grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]"
-  >
+  <div class="dark:bg-darktheme flex min-h-screen w-full">
     <MySidebar />
-    <div class="flex flex-col">
+    <div class="flex w-full flex-col">
       <Header />
       <slot />
     </div>

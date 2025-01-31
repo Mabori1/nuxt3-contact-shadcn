@@ -1,1 +1,3 @@
-export const useHideSidebar = () => useState("hideSidebar", () => false);
+export const useHideSidebar = () => {
+  return useState("hideSidebar", () => false);
+};

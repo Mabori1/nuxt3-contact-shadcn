@@ -2,6 +2,7 @@
 import { Badge } from "@/components/ui/badge";
 
 import { Button } from "@/components/ui/button";
+import { useMediaQuery } from "@vueuse/core";
 import {
   Bell,
   Home,
@@ -12,11 +13,15 @@ import {
   Users,
 } from "lucide-vue-next";
 
+const isMobile = useMediaQuery("(max-width: 768px)");
 const hideSidebar = useHideSidebar();
+onMounted(() => {
+  hideSidebar.value = isMobile.value;
+});
 </script>
 <template>
   <div
-    :class="`hidden border-r bg-muted/40 ${hideSidebar ? 'md:hidden' : 'md:block'}`"
+    :class="`left-0 top-14 h-screen overflow-hidden border-r transition-[width] duration-300 ease-in-out max-sm:absolute sm:bg-muted/40 ${hideSidebar ? 'w-0' : 'w-56 sm:w-48 lg:w-64'}`"
   >
     <div class="flex h-full max-h-screen flex-col gap-2">
       <div class="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
