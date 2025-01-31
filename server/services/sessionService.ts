@@ -6,6 +6,7 @@ import {
   deleteSessionByUserId,
   getSessionByAuthToken,
 } from "../repositories/sessionRepository";
+import { sanitizeUserForFrontend } from "./userService";
 
 export async function makeSession(
   user: IUser,
@@ -28,7 +29,7 @@ export async function getUserBySessionToken(token: string): Promise<IUser> {
   if (session === null || session.user === undefined)
     throw new Error("Session not found");
 
-  return session.user;
+  return sanitizeUserForFrontend(session.user);
 }
 
 export async function removeSessionByUserId(id: number): Promise<void> {

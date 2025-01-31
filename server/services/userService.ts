@@ -1,3 +1,4 @@
+import { IUser } from "~/types/IUser";
 import {
   getUserByEmail,
   getUserByUsername,
@@ -69,4 +70,12 @@ export async function doesNotUserExists(email: string): Promise<existsCheck> {
   return {
     value: false,
   };
+}
+
+export function sanitizeUserForFrontend(user: IUser) {
+  if (!user) throw new Error("User not found, userservice");
+
+  delete user.password;
+
+  return user;
 }

@@ -37,6 +37,12 @@ const setColorScheme = (newTheme: Theme) => {
 
 const user = useState<IUser>("user");
 const logout = userLogout;
+
+const hideSidebar = useHideSidebar();
+function toggleSidebar() {
+  console.log(hideSidebar.value);
+  hideSidebar.value = !hideSidebar.value;
+}
 </script>
 
 <template>
@@ -101,7 +107,7 @@ const logout = userLogout;
     </Sheet>
     <div class="flex w-full items-center justify-between">
       <div class="flex items-center">
-        <PanelLeft />
+        <PanelLeft @click="toggleSidebar" />
         <Separator orientation="vertical" class="mx-4 h-8" />
       </div>
       <div class="w-full flex-1">
@@ -125,7 +131,7 @@ const logout = userLogout;
         setColorScheme($colorMode.preference == 'dark' ? 'light' : 'dark')
       "
     />
-    <h3>{{ user ? user.username : "Guest" }}</h3>
+    <h3 class="text-nowrap">Welcome, {{ user ? user.username : "Guest" }}</h3>
     <DropdownMenu>
       <DropdownMenuTrigger as-child>
         <Button variant="secondary" size="icon" class="rounded-full">

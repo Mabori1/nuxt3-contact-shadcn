@@ -6,6 +6,7 @@ nuxtApp.hook("page:finish", () => {
   window.scrollTo(0, 0);
 });
 
+useState("hideSidebar", () => false);
 const user: IUser = await useUser();
 if (!user) useRouter().push("/login");
 </script>
