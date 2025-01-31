@@ -1,16 +1,17 @@
 <script setup lang="ts">
-import { useRouter, useSeoMeta, useState } from "nuxt/app";
+import { useSeoMeta, useState } from "nuxt/app";
 import type { IUser } from "~/types/IUser";
-import { userLogout } from "~/composables/useAuth";
 
 useSeoMeta({
   title: "Контакты",
 });
 
-const user = useState<IUser>("user");
-if (!user) useRouter().push("/register");
+definePageMeta({
+  middleware: ["auth", "guest"],
+});
 
-const logout = userLogout;
+const user = useState<IUser>("user");
+// if (!user) useRouter().push("/register");
 </script>
 <template>
   <div>

@@ -1,4 +1,3 @@
-<script setup lang="ts"></script>
 <template>
   <div class="dark:bg-darktheme flex min-h-screen w-full">
     <MySidebar />

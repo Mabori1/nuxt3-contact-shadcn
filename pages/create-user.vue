@@ -81,6 +81,10 @@ const onSubmit = handleSubmit((values) => {
   //   ),
   // });
 });
+
+definePageMeta({
+  middleware: ["guest"],
+});
 </script>
 
 <template>

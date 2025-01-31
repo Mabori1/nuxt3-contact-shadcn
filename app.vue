@@ -7,8 +7,7 @@ nuxtApp.hook("page:finish", () => {
 });
 
 useState("hideSidebar", () => false);
-const user: IUser = await useUser();
-if (!user) useRouter().push("/login");
+await useUser();
 </script>
 <template>
   <!-- <NuxtRouteAnnouncer /> -->

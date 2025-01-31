@@ -69,7 +69,7 @@ function toggleSidebar() {
       </div>
     </div>
     <SunMoon
-      class="h-5 w-5"
+      class="h-5 w-5 hover:scale-150"
       @click="
         setColorScheme($colorMode.preference == 'dark' ? 'light' : 'dark')
       "
@@ -77,7 +77,11 @@ function toggleSidebar() {
     <h3 class="text-nowrap">Welcome, {{ user ? user.username : "Guest" }}</h3>
     <DropdownMenu>
       <DropdownMenuTrigger as-child>
-        <Button variant="secondary" size="icon" class="rounded-full">
+        <Button
+          variant="secondary"
+          size="icon"
+          class="rounded-full hover:scale-125"
+        >
           <CircleUser class="h-5 w-5" />
           <span class="sr-only">Toggle user menu</span>
         </Button>
