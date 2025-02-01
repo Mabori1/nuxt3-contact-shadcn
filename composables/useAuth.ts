@@ -1,8 +1,12 @@
+import { toast } from "~/components/ui/toast";
 import type { ISession } from "~/types/ISession";
 import type { IUser } from "~/types/IUser";
 
 export async function userLogout() {
   await useFetch("/api/auth/logout");
+  toast({
+    title: "Logged out successfully",
+  });
   useState("user").value = null;
   await useRouter().push("/login");
 }
@@ -34,10 +38,11 @@ export async function registerWithEmail(user: {
 
     if (res) {
       useState("user").value = res;
+      toast({ title: "Registered in successfully" });
       await useRouter().push("/");
     }
   } catch (err: any) {
-    console.log("error: " + err.toString());
+    toast({ title: "Registration failed, " + err.toString() });
   }
 }
 
@@ -53,9 +58,10 @@ export async function loginWithEmail(user: {
 
     if (res) {
       useState("user").value = res;
+      toast({ title: "Logged in successfully" });
       await useRouter().push("/");
     }
   } catch (err: any) {
-    console.log("error: " + err.toString());
+    toast({ title: "Wrong email or password, " + err.toString() });
   }
 }

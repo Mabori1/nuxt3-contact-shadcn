@@ -59,14 +59,14 @@ const { isFieldDirty, handleSubmit, resetForm } = useForm({
 const onSubmit = handleSubmit(async (values) => {
   await registerWithEmail(values);
 
-  toast({
-    title: "You submitted the following values:",
-    description: h(
-      "pre",
-      { class: "mt-2 w-[340px] rounded-md bg-slate-950 p-4" },
-      h("code", { class: "text-white" }, JSON.stringify(values, null, 2)),
-    ),
-  });
+  // toast({
+  //   title: "You submitted the following values:",
+  //   description: h(
+  //     "pre",
+  //     { class: "mt-2 w-[340px] rounded-md bg-slate-950 p-4" },
+  //     h("code", { class: "text-white" }, JSON.stringify(values, null, 2)),
+  //   ),
+  // });
 });
 </script>
 

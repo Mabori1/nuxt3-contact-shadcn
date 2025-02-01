@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { userLogout } from "~/composables/useAuth";
 
@@ -13,20 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import {
-  CircleUser,
-  Home,
-  LineChart,
-  Menu,
-  Package,
-  Package2,
-  PanelLeft,
-  Search,
-  ShoppingCart,
-  SunMoon,
-  Users,
-} from "lucide-vue-next";
+import { CircleUser, PanelLeft, Search, SunMoon } from "lucide-vue-next";
 import type { IUser } from "~/types/IUser";
 
 type Theme = "light" | "dark";
@@ -89,7 +75,9 @@ function toggleSidebar() {
       <DropdownMenuContent align="end">
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>Settings</DropdownMenuItem>
+        <DropdownMenuItem @click="useRouter().push('/register')"
+          >Register</DropdownMenuItem
+        >
         <DropdownMenuItem>Support</DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem @click="logout">Logout</DropdownMenuItem>
