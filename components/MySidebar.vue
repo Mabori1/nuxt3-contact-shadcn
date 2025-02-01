@@ -4,6 +4,11 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useMediaQuery } from "@vueuse/core";
 import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import {
   Bell,
   Home,
   LineChart,
@@ -13,12 +18,15 @@ import {
   ShoppingCart,
   Users,
 } from "lucide-vue-next";
+import { CaretSortIcon } from "@radix-icons/vue";
 
 const isMobile = useMediaQuery("(max-width: 768px)");
 const hideSidebar = useHideSidebar();
 onMounted(() => {
   hideSidebar.value = isMobile.value;
 });
+
+const isOpen = ref(false);
 </script>
 <template>
   <div
@@ -70,6 +78,48 @@ onMounted(() => {
             <MessageCircleQuestion class="h-4 w-4" />
             Ask in forum
           </a>
+          <Collapsible v-model:open="isOpen" class="ml-2 w-[150px]">
+            <div
+              class="relative flex items-center justify-between space-x-4 px-4"
+            >
+              <CollapsibleTrigger as-child>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  class="flex w-9 items-center p-0"
+                >
+                  <CaretSortIcon class="h-4 w-4" />
+                  <span
+                    class="text-muted-foreground transition-all hover:text-primary"
+                    >Форум</span
+                  >
+                </Button>
+              </CollapsibleTrigger>
+            </div>
+            <CollapsibleContent class="space-y-1">
+              <a
+                href="#"
+                class="ml-1 flex items-center gap-3 rounded-lg pl-2 text-muted-foreground transition-all hover:text-primary"
+              >
+                <MessageCircleQuestion class="h-4 w-4" />
+                Все темы
+              </a>
+              <a
+                href="#"
+                class="ml-1 flex items-center gap-3 rounded-lg pl-2 text-muted-foreground transition-all hover:text-primary"
+              >
+                <MessageCircleQuestion class="h-4 w-4" />
+                Создать тему
+              </a>
+              <a
+                href="#"
+                class="ml-1 flex items-center gap-3 rounded-lg pl-2 text-muted-foreground transition-all hover:text-primary"
+              >
+                <MessageCircleQuestion class="h-4 w-4" />
+                Поиск тем
+              </a>
+            </CollapsibleContent>
+          </Collapsible>
           <a
             href="#"
             class="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"

@@ -14,5 +14,5 @@ const endpoint = "/api/forum/ask";
 </script>
 
 <template>
-  <div>welcome ask</div>
+  <div></div>
 </template>
