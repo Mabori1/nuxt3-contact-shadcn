@@ -7,6 +7,7 @@ import {
   Bell,
   Home,
   LineChart,
+  MessageCircleQuestion,
   Package,
   Package2,
   ShoppingCart,
@@ -61,6 +62,13 @@ onMounted(() => {
           >
             <Package class="h-4 w-4" />
             Products
+          </a>
+          <a
+            href="/forum/ask"
+            class="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
+          >
+            <MessageCircleQuestion class="h-4 w-4" />
+            Ask in forum
           </a>
           <a
             href="#"

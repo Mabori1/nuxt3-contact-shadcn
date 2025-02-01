@@ -8,6 +8,24 @@ export async function getUserByEmail(email: string) {
   });
 }
 
+export async function getUserById(id: number) {
+  const user = await prisma.user.findUnique({
+    where: {
+      id: id,
+    },
+    select: {
+      id: true,
+      username: true,
+      email: true,
+    },
+  });
+
+  if (!user) {
+    throw new Error(`User with id: ${id} not found`);
+  }
+  return user;
+}
+
 export async function getUser(email: string) {
   const existsUser = await prisma.user.findUnique({
     where: { email },

@@ -14,7 +14,7 @@ model User {
   id       Int        @id @default(autoincrement())
   email    String     @unique
   username String     @unique
-  password String?
+  password String
   session  Session?
   contacts Contact[]
   question Question[]
@@ -46,7 +46,7 @@ model Question {
   id          Int      @id @default(autoincrement())
   author      User     @relation(fields: [authorId], references: [id])
   authorId    Int
-  title       String
+  title       String   @unique
   description String
   answers     Answer[]
 }
