@@ -19,12 +19,18 @@ export const toastVariants = cva(
     variants: {
       variant: {
         default: "border bg-background text-foreground",
+        success: "bg-teal-400 border-white text-white ",
         destructive:
           "destructive group border-destructive bg-destructive text-destructive-foreground",
+      },
+      position: {
+        default:
+          "top-0 right-0 flex fixed md:max-w-[420px] md:top-4 md:right-4",
       },
     },
     defaultVariants: {
       variant: "default",
+      position: "default",
     },
   },
 );

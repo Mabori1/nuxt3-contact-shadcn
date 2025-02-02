@@ -36,7 +36,7 @@ export async function registerWithEmail(user: {
       body: user,
     });
 
-    if (res) {
+    if (!res.error) {
       useState("user").value = res;
       toast({ title: "Registered in successfully" });
       await useRouter().push("/");

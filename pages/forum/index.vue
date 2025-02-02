@@ -1,15 +1,20 @@
 <script setup lang="ts">
 import { useSeoMeta, useState } from "nuxt/app";
 import type { IUser } from "~/types/IUser";
+import { accounts, mails } from "@/components/forum/data/mails";
 
 useSeoMeta({
-  title: "Контакты",
+  title: "Форум",
+});
+
+definePageMeta({
+  middleware: ["guest"],
 });
 
 const user = useState<IUser>("user");
 </script>
 <template>
   <div>
-    <h1 class="text-3xl">Home {{ user.username }}</h1>
+    <Forum :accounts="accounts" :mails="mails" :nav-collapsed-size="4" />
   </div>
 </template>

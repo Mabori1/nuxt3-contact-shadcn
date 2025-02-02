@@ -11,7 +11,7 @@ import {
 import { Input } from "@/components/ui/input";
 
 import { toTypedSchema } from "@vee-validate/zod";
-import { ArrowLeft, Backpack, CornerDownLeft, Eraser } from "lucide-vue-next";
+import { ArrowLeft, CornerDownLeft, Eraser } from "lucide-vue-next";
 import { useForm } from "vee-validate";
 import * as z from "zod";
 import type { IQuestionPost } from "~/types/IQuestion";
@@ -25,7 +25,7 @@ const data: IQuestionPost = reactive({
   description: "",
 });
 
-const endpoint = "/api/forum/ask";
+const endpoint = "/api/forum/create-question";
 
 const formSchema = toTypedSchema(
   z.object({
@@ -45,13 +45,13 @@ const { isFieldDirty, handleSubmit, resetForm } = useForm({
 });
 
 const onSubmit = handleSubmit(async (values) => {
-  //await loginWithEmail(values);
+  useToastTitle().value = values.title;
+  await addNewQuestion(values);
+  // await $fetch(endpoint, {
+  //   method: "post",
+  //   body: values,
+  // });
 });
-
-const router = useRouter();
-const goToRegister = () => {
-  router.push("/register");
-};
 </script>
 
 <template>
@@ -64,7 +64,7 @@ const goToRegister = () => {
         <form class="items-center space-y-6" @submit="onSubmit">
           <FormField
             v-slot="{ componentField }"
-            name="email"
+            name="title"
             :validate-on-blur="!isFieldDirty"
           >
             <FormItem>
@@ -82,7 +82,7 @@ const goToRegister = () => {
 
           <FormField
             v-slot="{ componentField }"
-            name="password"
+            name="description"
             :validate-on-blur="!isFieldDirty"
           >
             <FormItem>
@@ -98,28 +98,26 @@ const goToRegister = () => {
                     class="min-h-32 resize-none border-0 p-3 shadow-none focus-visible:ring-0"
                     v-bind="componentField"
                   />
-                  <div class="flex items-center gap-2.5 p-3 pt-0">
-                    <Button
-                      @click="$router.back()"
-                      class="ml-auto mt-1 gap-1.5"
-                    >
-                      Отмена
-                      <ArrowLeft class="size-3.5" />
-                    </Button>
-                    <Button @click="resetForm" class="mx-3 mt-1 gap-1.5">
-                      Сброс
-                      <Eraser class="size-3.5" />
-                    </Button>
-                    <Button type="submit" size="sm" class="mr-3 mt-1 gap-1.5">
-                      Сохранить
-                      <CornerDownLeft class="size-3.5" />
-                    </Button>
-                  </div>
                 </div>
               </FormControl>
               <FormMessage />
             </FormItem>
           </FormField>
+
+          <div class="flex items-center gap-2.5 p-3 pt-0">
+            <Button @click="$router.back()" class="ml-auto mt-1 gap-1.5">
+              Отмена
+              <ArrowLeft class="size-3.5" />
+            </Button>
+            <Button @click="resetForm" class="mx-3 mt-1 gap-1.5">
+              Сброс
+              <Eraser class="size-3.5" />
+            </Button>
+            <Button type="submit" size="sm" class="mr-3 mt-1 gap-1.5">
+              Сохранить
+              <CornerDownLeft class="size-3.5" />
+            </Button>
+          </div>
         </form>
       </CardContent>
     </Card>

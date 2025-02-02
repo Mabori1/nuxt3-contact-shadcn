@@ -87,7 +87,7 @@ const isOpen = ref(false);
             </div>
             <CollapsibleContent class="space-y-1">
               <a
-                href="/forum/ask"
+                href="/forum"
                 class="ml-1 flex items-center gap-3 rounded-lg pl-2 text-muted-foreground transition-all hover:text-primary"
               >
                 <MessageCircleQuestion class="h-4 w-4" />

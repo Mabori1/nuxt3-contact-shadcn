@@ -3,8 +3,13 @@ import { getUserBySessionToken } from "~/server/services/sessionService";
 import { IQuestionPost } from "~/types/IQuestion";
 
 export default defineEventHandler(async (event) => {
-  const body = await readBody(event);
-  const data: IQuestionPost = body.data;
+  const body: IQuestionPost = await readBody(event);
+  if (!body.title || !body.description) {
+    throw createError({
+      statusCode: 400,
+      statusMessage: "Bad Request no body",
+    });
+  }
 
   const authToken = getCookie(event, "auth_token");
   if (!authToken) {
@@ -15,5 +20,5 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 401, statusMessage: "Unauthorized" });
   }
 
-  return await createQuestion(data, user.id);
+  return await createQuestion(body, user.id);
 });
