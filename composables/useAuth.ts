@@ -31,7 +31,7 @@ export async function registerWithEmail(user: {
   password: string;
 }) {
   try {
-    const res = await $fetch<ISession>("/api/auth/register", {
+    const res = await useFetch<ISession>("/api/auth/register", {
       method: "post",
       body: user,
     });
@@ -51,7 +51,7 @@ export async function loginWithEmail(user: {
   password: string;
 }) {
   try {
-    const res = await $fetch<ISession>("/api/auth/login", {
+    const res = await useFetch<ISession>("/api/auth/login", {
       method: "post",
       body: user,
     });

@@ -33,7 +33,7 @@ const isOpen = ref(false);
     :class="`left-0 top-14 h-screen overflow-hidden border-r transition-[width] duration-300 ease-in-out max-sm:absolute sm:bg-muted/40 ${hideSidebar ? 'w-0' : 'w-56 sm:w-48 lg:w-64'}`"
   >
     <div class="flex h-full max-h-screen flex-col gap-2">
-      <div class="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
+      <div class="flex h-12 items-center border-b px-4 lg:h-14 lg:px-6">
         <a href="/" class="flex items-center gap-2 font-semibold">
           <Package2 class="h-6 w-6" />
           <span class="">Контакты </span>
@@ -71,24 +71,13 @@ const isOpen = ref(false);
             <Package class="h-4 w-4" />
             Products
           </a>
-          <a
-            href="/forum/ask"
-            class="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
-          >
-            <MessageCircleQuestion class="h-4 w-4" />
-            Ask in forum
-          </a>
           <Collapsible v-model:open="isOpen" class="ml-2 w-[150px]">
             <div
-              class="relative flex items-center justify-between space-x-4 px-4"
+              class="relative ml-2 flex items-center justify-between space-x-4 pl-3"
             >
               <CollapsibleTrigger as-child>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  class="flex w-9 items-center p-0"
-                >
-                  <CaretSortIcon class="h-4 w-4" />
+                <Button variant="ghost" size="sm" class="flex w-9 p-0">
+                  <CaretSortIcon class="mr-2 h-4 w-4" />
                   <span
                     class="text-muted-foreground transition-all hover:text-primary"
                     >Форум</span
@@ -98,14 +87,14 @@ const isOpen = ref(false);
             </div>
             <CollapsibleContent class="space-y-1">
               <a
-                href="#"
+                href="/forum/ask"
                 class="ml-1 flex items-center gap-3 rounded-lg pl-2 text-muted-foreground transition-all hover:text-primary"
               >
                 <MessageCircleQuestion class="h-4 w-4" />
                 Все темы
               </a>
               <a
-                href="#"
+                href="/forum/ask"
                 class="ml-1 flex items-center gap-3 rounded-lg pl-2 text-muted-foreground transition-all hover:text-primary"
               >
                 <MessageCircleQuestion class="h-4 w-4" />

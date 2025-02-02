@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useSeoMeta, useState } from "nuxt/app";
 import type { IUser } from "~/types/IUser";
+import { accounts, mails } from "../components/forum/data/mails";
 
 useSeoMeta({
   title: "Контакты",
@@ -11,10 +12,9 @@ definePageMeta({
 });
 
 const user = useState<IUser>("user");
-// if (!user) useRouter().push("/register");
 </script>
 <template>
   <div>
-    {{ user && user.username }}
+    <Forum :accounts="accounts" :mails="mails" :nav-collapsed-size="4" />
   </div>
 </template>

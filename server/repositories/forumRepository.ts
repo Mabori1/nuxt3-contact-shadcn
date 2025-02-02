@@ -18,12 +18,14 @@ export async function findQuestion(id: number): Promise<IQuestion> {
     },
     include: {
       answers: true,
+      labels: true,
     },
   });
 
   if (!question) {
     throw new Error("Question not found");
   }
+
   return question;
 }
 

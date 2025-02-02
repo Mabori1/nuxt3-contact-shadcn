@@ -32,7 +32,7 @@ function toggleSidebar() {
 
 <template>
   <header
-    class="flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6"
+    class="flex h-12 items-center gap-4 border-b bg-muted/40 px-4 lg:h-14 lg:px-6"
   >
     <div class="flex w-full items-center justify-between">
       <div class="flex items-center">
