@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import { useSeoMeta, useState } from "nuxt/app";
-import type { IUser } from "~/types/IUser";
-import { accounts, mails } from "@/components/forum/data/mails";
+import { useSeoMeta } from "nuxt/app";
 
 useSeoMeta({
   title: "Форум",
@@ -11,10 +9,11 @@ definePageMeta({
   middleware: ["guest"],
 });
 
-const user = useState<IUser>("user");
+const questions = await getQuestions();
+console.log(questions.value);
 </script>
 <template>
   <div>
-    <Forum :accounts="accounts" :mails="mails" :nav-collapsed-size="4" />
+    <Forum :questions="questions ? questions : []" />
   </div>
 </template>

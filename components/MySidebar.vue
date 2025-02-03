@@ -36,7 +36,7 @@ const isOpen = ref(false);
       <div class="flex h-12 items-center border-b px-4 lg:h-14 lg:px-6">
         <a href="/" class="flex items-center gap-2 font-semibold">
           <Package2 class="h-6 w-6" />
-          <span class="">Контакты </span>
+          <span class=""> CRM </span>
         </a>
         <Button variant="outline" size="icon" class="ml-auto h-8 w-8">
           <Bell class="h-4 w-4" />

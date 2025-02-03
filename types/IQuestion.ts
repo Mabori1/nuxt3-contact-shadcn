@@ -4,7 +4,7 @@ export interface IQuestion {
   authorName?: string;
   title: string;
   description: string;
-  date?: Date;
+  date: Date;
   read: boolean;
   labels: ILabel[];
   answers: IAnswer[];
@@ -20,7 +20,7 @@ export interface IAnswer {
   text: string;
   authorId: number;
   authorName?: string;
-  date?: Date;
+  date: Date;
 }
 
 export interface IAnswerPost {

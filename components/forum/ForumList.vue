@@ -1,17 +1,19 @@
 <script lang="ts" setup>
-import type { Mail } from "./data/mails";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { formatDistanceToNow } from "date-fns";
 import { ru } from "date-fns/locale";
+import type { IQuestion } from "~/types/IQuestion";
 
-interface MailListProps {
-  items: Mail[];
+interface QuestionListProps {
+  items: IQuestion[];
 }
 
-defineProps<MailListProps>();
-const selectedMail = defineModel<string>("selectedMail", { required: false });
+defineProps<QuestionListProps>();
+const selectedQuestion = defineModel<number>("selectedQuestion", {
+  required: false,
+});
 
 function getBadgeVariantFromLabel(label: string) {
   if (["work"].includes(label.toLowerCase())) return "default";
@@ -24,7 +26,10 @@ function getBadgeVariantFromLabel(label: string) {
 
 <template>
   <ScrollArea class="flex h-screen">
-    <div class="flex flex-1 flex-col gap-2 p-4 pt-0">
+    <div v-if="items.length === 0" class="text-center text-2xl">
+      Нет тем форума
+    </div>
+    <div v-else class="flex flex-1 flex-col gap-2 p-4 pt-0">
       <TransitionGroup name="list" appear>
         <button
           v-for="item of items"
@@ -32,16 +37,16 @@ function getBadgeVariantFromLabel(label: string) {
           :class="
             cn(
               'flex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent',
-              selectedMail === item.id && 'bg-muted',
+              selectedQuestion === item.id && 'bg-muted',
             )
           "
-          @click="selectedMail = item.id"
+          @click="selectedQuestion = item.id"
         >
           <div class="flex w-full flex-col gap-1">
             <div class="flex items-center">
               <div class="flex items-center gap-2">
                 <div class="font-semibold">
-                  {{ item.name }}
+                  {{ item.authorName }}
                 </div>
                 <span
                   v-if="!item.read"
@@ -52,7 +57,7 @@ function getBadgeVariantFromLabel(label: string) {
                 :class="
                   cn(
                     'ml-auto text-xs',
-                    selectedMail === item.id
+                    selectedQuestion === item.id
                       ? 'text-foreground'
                       : 'text-muted-foreground',
                   )
@@ -68,17 +73,17 @@ function getBadgeVariantFromLabel(label: string) {
             </div>
 
             <div class="text-xs font-medium">
-              {{ item.subject }}
+              {{ item.title }}
             </div>
           </div>
           <div class="line-clamp-2 text-xs text-muted-foreground">
-            {{ item.text.substring(0, 300) }}
+            {{ item.description.substring(0, 300) }}
           </div>
           <div class="flex items-center gap-2">
             <Badge
               v-for="label of item.labels"
-              :key="label"
-              :variant="getBadgeVariantFromLabel(label)"
+              :key="label.id"
+              :variant="getBadgeVariantFromLabel(label.label)"
             >
               {{ label }}
             </Badge>

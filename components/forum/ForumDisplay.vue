@@ -35,16 +35,16 @@ import {
   Trash2,
 } from "lucide-vue-next";
 import { computed } from "vue";
-import type { Mail } from "./data/mails";
+import type { IQuestion } from "~/types/IQuestion";
 
 interface MailDisplayProps {
-  mail: Mail | undefined;
+  question: IQuestion | undefined;
 }
 
 const props = defineProps<MailDisplayProps>();
 
 const mailFallbackName = computed(() => {
-  return props.mail?.name
+  return props.question?.title
     .split(" ")
     .map((chunk) => chunk[0])
     .join("");
@@ -59,7 +59,7 @@ const today = new Date();
       <div class="flex items-center gap-2">
         <Tooltip>
           <TooltipTrigger as-child>
-            <Button variant="ghost" size="icon" :disabled="!mail">
+            <Button variant="ghost" size="icon" :disabled="!question">
               <Archive class="size-4" />
               <span class="sr-only">Archive</span>
             </Button>
@@ -68,7 +68,7 @@ const today = new Date();
         </Tooltip>
         <Tooltip>
           <TooltipTrigger as-child>
-            <Button variant="ghost" size="icon" :disabled="!mail">
+            <Button variant="ghost" size="icon" :disabled="!question">
               <ArchiveX class="size-4" />
               <span class="sr-only">Move to junk</span>
             </Button>
@@ -77,7 +77,7 @@ const today = new Date();
         </Tooltip>
         <Tooltip>
           <TooltipTrigger as-child>
-            <Button variant="ghost" size="icon" :disabled="!mail">
+            <Button variant="ghost" size="icon" :disabled="!question">
               <Trash2 class="size-4" />
               <span class="sr-only">Move to trash</span>
             </Button>
@@ -89,7 +89,7 @@ const today = new Date();
           <Popover>
             <PopoverTrigger as-child>
               <TooltipTrigger as-child>
-                <Button variant="ghost" size="icon" :disabled="!mail">
+                <Button variant="ghost" size="icon" :disabled="!question">
                   <Clock class="size-4" />
                   <span class="sr-only">Snooze</span>
                 </Button>
@@ -136,7 +136,7 @@ const today = new Date();
       <div class="ml-auto flex items-center gap-2">
         <Tooltip>
           <TooltipTrigger as-child>
-            <Button variant="ghost" size="icon" :disabled="!mail">
+            <Button variant="ghost" size="icon" :disabled="!question">
               <Reply class="size-4" />
               <span class="sr-only">Reply</span>
             </Button>
@@ -145,7 +145,7 @@ const today = new Date();
         </Tooltip>
         <Tooltip>
           <TooltipTrigger as-child>
-            <Button variant="ghost" size="icon" :disabled="!mail">
+            <Button variant="ghost" size="icon" :disabled="!question">
               <ReplyAll class="size-4" />
               <span class="sr-only">Reply all</span>
             </Button>
@@ -154,7 +154,7 @@ const today = new Date();
         </Tooltip>
         <Tooltip>
           <TooltipTrigger as-child>
-            <Button variant="ghost" size="icon" :disabled="!mail">
+            <Button variant="ghost" size="icon" :disabled="!question">
               <Forward class="size-4" />
               <span class="sr-only">Forward</span>
             </Button>
@@ -165,7 +165,7 @@ const today = new Date();
       <Separator orientation="vertical" class="mx-2 h-6" />
       <DropdownMenu>
         <DropdownMenuTrigger as-child>
-          <Button variant="ghost" size="icon" :disabled="!mail">
+          <Button variant="ghost" size="icon" :disabled="!question">
             <MoreVertical class="size-4" />
             <span class="sr-only">More</span>
           </Button>
@@ -179,7 +179,7 @@ const today = new Date();
       </DropdownMenu>
     </div>
     <Separator />
-    <div v-if="mail" class="flex flex-1 flex-col">
+    <div v-if="question" class="flex flex-1 flex-col">
       <div class="flex items-start p-4">
         <div class="flex items-start gap-4 text-sm">
           <Avatar>
@@ -189,23 +189,24 @@ const today = new Date();
           </Avatar>
           <div class="grid gap-1">
             <div class="font-semibold">
-              {{ mail.name }}
+              {{ question.title }}
+            </div>
+            <div class="">
+              {{ question.description }}
             </div>
             <div class="line-clamp-1 text-xs">
-              {{ mail.subject }}
-            </div>
-            <div class="line-clamp-1 text-xs">
-              <span class="font-medium">Reply-To:</span> {{ mail.email }}
+              <span class="font-medium">Автор :</span>
+              {{ question.authorName }}
             </div>
           </div>
         </div>
-        <div v-if="mail.date" class="ml-auto text-xs text-muted-foreground">
-          {{ format(new Date(mail.date), "PPpp", { locale: ru }) }}
+        <div v-if="question.date" class="ml-auto text-xs text-muted-foreground">
+          {{ format(new Date(question.date), "PPpp", { locale: ru }) }}
         </div>
       </div>
       <Separator />
       <div class="flex-1 whitespace-pre-wrap p-4 text-sm">
-        {{ mail.text }}
+        {{ question.description }}
       </div>
       <Separator class="mt-auto" />
       <div class="p-4">
@@ -215,7 +216,7 @@ const today = new Date();
           <Label for="message" class="sr-only"> Message </Label>
           <Textarea
             id="message"
-            :placeholder="`Reply ${mail.name}...`"
+            :placeholder="`Ответ ${question.authorName}...`"
             class="min-h-12 resize-none border-0 p-3 shadow-none focus-visible:ring-0"
           />
           <div class="flex items-center p-3 pt-0">
@@ -225,20 +226,6 @@ const today = new Date();
             </Button>
           </div>
         </form>
-        <!-- <form> -->
-        <!--   <div class="grid gap-4"> -->
-        <!--     <Textarea class="p-4" :placeholder="`Reply ${mail.name}...`" /> -->
-        <!--     <div class="flex items-center"> -->
-        <!--       <Label -->
-        <!--         html-for="mute" -->
-        <!--         class="flex items-center gap-2 text-xs font-normal" -->
-        <!--       > -->
-        <!--         <Switch id="mute" aria-label="Mute thread" /> Mute this thread -->
-        <!--       </Label> -->
-        <!--       <Button type="button" size="sm" class="ml-auto"> Send </Button> -->
-        <!--     </div> -->
-        <!--   </div> -->
-        <!-- </form> -->
       </div>
     </div>
     <div v-else class="p-8 text-center text-muted-foreground">
