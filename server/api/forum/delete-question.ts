@@ -27,7 +27,7 @@ export default defineEventHandler(async (event) => {
   if (!isMine) {
     sendError(
       event,
-      createError({ statusCode: 403, statusMessage: "Unauthorized" }),
+      createError({ statusCode: 403, statusMessage: "Forbidden" }),
     );
   }
 

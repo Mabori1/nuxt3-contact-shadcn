@@ -29,6 +29,22 @@ export async function findQuestion(id: number): Promise<IQuestion> {
   return question;
 }
 
+export async function findAllQuestions(): Promise<IQuestion[]> {
+  const questions = await prisma.question.findMany({
+    orderBy: { date: "desc" },
+    include: {
+      answers: true,
+      labels: true,
+    },
+  });
+
+  if (!questions) {
+    throw new Error("Question not found");
+  }
+
+  return questions;
+}
+
 export async function createAnswer(data: IAnswerPost, authorId: number) {
   return await prisma.answer.create({
     data: {

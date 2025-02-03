@@ -1,7 +1,7 @@
 export interface IQuestion {
   id: number;
   authorId: number;
-  authName?: string;
+  authorName?: string;
   title: string;
   description: string;
   date?: Date;
