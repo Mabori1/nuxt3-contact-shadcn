@@ -10,7 +10,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { refDebounced } from "@vueuse/core";
 import { Search } from "lucide-vue-next";
-import { computed, ref } from "vue";
 import type { IAnswer, ILabel, IQuestion } from "~/types/IQuestion";
 import ForumDisplay from "./ForumDisplay.vue";
 import ForumList from "./ForumList.vue";
@@ -55,9 +54,18 @@ const unreadQuestionList = computed(() =>
   filteredQuestionList.value.filter((item) => !item.read),
 );
 
-const selectedQuestionData = computed(() =>
-  props.questions.find((item) => item.id === selectedQuestion.value),
-);
+const selectedQuestionData = computed(() => {
+  if (props.questions.length !== 0) {
+    return props.questions.find((item) => item.id === selectedQuestion.value);
+  }
+  return undefined;
+});
+
+const emit = defineEmits(["remove-question"]);
+
+const removeQuestion = (id: number) => {
+  emit("remove-question", id);
+};
 </script>
 
 <template>
@@ -120,7 +128,10 @@ const selectedQuestionData = computed(() =>
       </ResizablePanel>
       <ResizableHandle id="resiz-handle-2" with-handle />
       <ResizablePanel id="resize-panel-3" :default-size="defaultLayout[2]">
-        <ForumDisplay :question="selectedQuestionData" />
+        <ForumDisplay
+          :question="selectedQuestionData"
+          @remove-question="removeQuestion"
+        />
       </ResizablePanel>
     </ResizablePanelGroup>
   </TooltipProvider>

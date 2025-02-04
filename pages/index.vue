@@ -10,6 +10,6 @@ const user = useState<IUser>("user");
 </script>
 <template>
   <div>
-    <h1 class="text-3xl">Home {{ user.username }}</h1>
+    <h1 class="text-3xl">Home {{ user.username ? user.username : "Guest" }}</h1>
   </div>
 </template>

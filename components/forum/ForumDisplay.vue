@@ -24,8 +24,6 @@ import {
 import { addDays, addHours, format, nextSaturday } from "date-fns";
 import { ru } from "date-fns/locale";
 import {
-  Archive,
-  ArchiveX,
   Clock,
   CornerDownLeft,
   Forward,
@@ -37,13 +35,13 @@ import {
 import { computed } from "vue";
 import type { IQuestion } from "~/types/IQuestion";
 
-interface MailDisplayProps {
+interface QuestionDisplayProps {
   question: IQuestion | undefined;
 }
 
-const props = defineProps<MailDisplayProps>();
+const props = defineProps<QuestionDisplayProps>();
 
-const mailFallbackName = computed(() => {
+const questionFallbackName = computed(() => {
   return props.question?.title
     .split(" ")
     .map((chunk) => chunk[0])
@@ -51,6 +49,12 @@ const mailFallbackName = computed(() => {
 });
 
 const today = new Date();
+
+const emit = defineEmits(["remove-question"]);
+
+const removeQuestion = (id: number) => {
+  emit("remove-question", id);
+};
 </script>
 
 <template>
@@ -59,30 +63,17 @@ const today = new Date();
       <div class="flex items-center gap-2">
         <Tooltip>
           <TooltipTrigger as-child>
-            <Button variant="ghost" size="icon" :disabled="!question">
-              <Archive class="size-4" />
-              <span class="sr-only">Archive</span>
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>Archive</TooltipContent>
-        </Tooltip>
-        <Tooltip>
-          <TooltipTrigger as-child>
-            <Button variant="ghost" size="icon" :disabled="!question">
-              <ArchiveX class="size-4" />
-              <span class="sr-only">Move to junk</span>
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>Move to junk</TooltipContent>
-        </Tooltip>
-        <Tooltip>
-          <TooltipTrigger as-child>
-            <Button variant="ghost" size="icon" :disabled="!question">
+            <Button
+              @click="question && removeQuestion(question.id)"
+              variant="ghost"
+              size="icon"
+              :disabled="!question"
+            >
               <Trash2 class="size-4" />
-              <span class="sr-only">Move to trash</span>
+              <span class="sr-only">Удалить тему форума</span>
             </Button>
           </TooltipTrigger>
-          <TooltipContent>Move to trash</TooltipContent>
+          <TooltipContent>Удалить тему форума</TooltipContent>
         </Tooltip>
         <Separator orientation="vertical" class="mx-1 h-6" />
         <Tooltip>
@@ -184,7 +175,7 @@ const today = new Date();
         <div class="flex items-start gap-4 text-sm">
           <Avatar>
             <AvatarFallback>
-              {{ mailFallbackName }}
+              {{ questionFallbackName }}
             </AvatarFallback>
           </Avatar>
           <div class="grid gap-1">

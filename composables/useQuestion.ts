@@ -2,7 +2,7 @@ import { toast } from "~/components/ui/toast";
 import type { IQuestion, IQuestionPost } from "~/types/IQuestion";
 
 export async function addNewQuestion(question: IQuestionPost) {
-  const res = await useFetch<IQuestionPost>("/api/forum/create-question", {
+  const res = await $fetch<IQuestionPost>("/api/forum/create-question", {
     method: "post",
     body: question,
   });
@@ -19,21 +19,21 @@ export async function addNewQuestion(question: IQuestionPost) {
 }
 
 export async function getQuestions() {
-  const { data } = await useFetch<IQuestion[]>("/api/forum/questions");
+  const questions = await $fetch<IQuestion[]>("/api/forum/questions");
 
-  if (!data) {
+  if (!questions) {
     toast({
       variant: "destructive",
       title: `Темы не получены`,
     });
-    throw new Error("Темы не получены");
+    return [];
   }
-  return data;
+  return questions;
 }
 
 export async function updateQuestion(question: IQuestionPost) {
-  const res = await useFetch<IQuestionPost>("/api/forum/create-question", {
-    method: "post",
+  const res = await useFetch<IQuestionPost>("/api/forum/update-question", {
+    method: "patch",
     body: question,
   });
 
@@ -45,5 +45,40 @@ export async function updateQuestion(question: IQuestionPost) {
   } else {
     await useRouter().push("/forum");
     toast({ title: `Создана тема: ${useToastTitle().value}` });
+  }
+}
+
+export async function readToggleQuestion(question: IQuestionPost) {
+  const res = await useFetch<IQuestionPost>("/api/forum/read-question", {
+    method: "put",
+    body: question,
+  });
+
+  if (!res) {
+    toast({
+      variant: "destructive",
+      title: `Тема не создана, ${res}`,
+    });
+  } else {
+    await useRouter().push("/forum");
+    toast({ title: `Создана тема: ${useToastTitle().value}` });
+  }
+}
+
+export async function removeQuestion(id: number) {
+  try {
+    await $fetch(`/api/forum/delete-question/${id}`, {
+      method: "delete",
+    });
+
+    toast({
+      title: `Тема успешно удалена`,
+    });
+  } catch (error) {
+    toast({
+      variant: "destructive",
+      title: `Тема не удалена.`,
+    });
+    createError({ statusCode: 404, statusMessage: "Question not found" });
   }
 }

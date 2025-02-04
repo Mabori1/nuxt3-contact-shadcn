@@ -5,14 +5,31 @@ import { IAnswer, IQuestion } from "~/types/IQuestion";
 export default defineEventHandler(async (event) => {
   const questions: IQuestion[] = await findAllQuestions();
 
-  questions.forEach(async (question: IQuestion) => {
-    const user = await getUserById(question?.authorId);
+  // Обрабатываем все вопросы
+  const updatedQuestions = await Promise.all(
+    questions.map(async (question: IQuestion) => {
+      // Обрабатываем все ответы внутри вопроса
+      const updatedAnswers = await Promise.all(
+        question.answers.map(async (answer: IAnswer) => {
+          const authorAnswer = await getUserById(answer.authorId);
+          return {
+            ...answer,
+            authorName: `@${authorAnswer.username}`,
+          };
+        }),
+      );
 
-    question.answers.forEach(
-      (answer: IAnswer) => (answer.authorName = "@" + user.username),
-    );
-    question.authorName = "@" + user.username;
-  });
+      // Получаем имя автора вопроса
+      const user = await getUserById(question.authorId);
 
-  return questions;
+      return {
+        ...question,
+        authorName: `@${user.username}`,
+        answers: updatedAnswers,
+      };
+    }),
+  );
+
+  console.log(updatedQuestions);
+  return updatedQuestions;
 });

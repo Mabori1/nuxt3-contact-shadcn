@@ -12,6 +12,7 @@ export async function userLogout() {
 }
 
 export const useAuthCookie = () => useCookie("auth_token");
+
 export async function useUser(): Promise<IUser> {
   const authCookie = useAuthCookie().value;
   const user = useState<IUser>("user");

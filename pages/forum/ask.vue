@@ -20,13 +20,6 @@ definePageMeta({
   middleware: "guest",
 });
 
-const data: IQuestionPost = reactive({
-  title: "",
-  description: "",
-});
-
-const endpoint = "/api/forum/create-question";
-
 const formSchema = toTypedSchema(
   z.object({
     title: z

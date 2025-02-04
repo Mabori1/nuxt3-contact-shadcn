@@ -29,6 +29,17 @@ export async function findQuestion(id: number): Promise<IQuestion> {
   return question;
 }
 
+export async function toggleReadQuestion(id: number, isRead: boolean) {
+  await prisma.question.update({
+    where: {
+      id: id,
+    },
+    data: {
+      read: isRead,
+    },
+  });
+}
+
 export async function findAllQuestions(): Promise<IQuestion[]> {
   const questions = await prisma.question.findMany({
     orderBy: { date: "desc" },

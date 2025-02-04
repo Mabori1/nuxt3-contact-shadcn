@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useSeoMeta } from "nuxt/app";
+import type { IQuestion } from "~/types/IQuestion";
 
 useSeoMeta({
   title: "Форум",
@@ -8,12 +9,26 @@ useSeoMeta({
 definePageMeta({
   middleware: ["guest"],
 });
+const questions = ref<IQuestion[]>([]);
 
-const questions = await getQuestions();
-console.log(questions.value);
+onMounted(async () => {
+  questions.value = await getQuestions();
+});
+
+watch(questions, async (newQuestion, oldQuestion) => {
+  if (newQuestion.length !== oldQuestion.length) {
+    questions.value = await getQuestions();
+  }
+});
+
+async function deleteQuestion(id: number) {
+  await removeQuestion(id);
+  questions.value = await getQuestions();
+}
 </script>
 <template>
   <div>
-    <Forum :questions="questions ? questions : []" />
+    <ForumEmpty v-if="!questions?.length" />
+    <Forum v-else :questions="questions" @remove-question="deleteQuestion" />
   </div>
 </template>
