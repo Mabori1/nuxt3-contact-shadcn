@@ -3,7 +3,11 @@ import { getUserById } from "~/server/repositories/userRepository";
 import { IAnswer, IQuestion } from "~/types/IQuestion";
 
 export default defineEventHandler(async (event) => {
-  const questions: IQuestion[] = await findAllQuestions();
+  const questions: IQuestion[] | null = await findAllQuestions();
+
+  if (!questions) {
+    return null;
+  }
 
   // Обрабатываем все вопросы
   const updatedQuestions = await Promise.all(
@@ -30,6 +34,5 @@ export default defineEventHandler(async (event) => {
     }),
   );
 
-  console.log(updatedQuestions);
   return updatedQuestions;
 });

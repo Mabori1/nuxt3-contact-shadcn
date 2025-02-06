@@ -13,16 +13,26 @@ export async function userLogout() {
 
 export const useAuthCookie = () => useCookie("auth_token");
 
-export async function useUser(): Promise<IUser> {
+export async function useUser() {
   const authCookie = useAuthCookie().value;
+  if (!authCookie) {
+    return null;
+  }
   const user = useState<IUser>("user");
 
   if (authCookie && !user.value) {
     const { data } = await useFetch<IUser>("/api/auth/getByAuthToken", {
       headers: useRequestHeaders(["cookie"]),
     });
-    if (data.value) user.value = data.value;
+    if (data.value) {
+      user.value = data.value;
+    } else {
+      return null;
+    }
+  } else {
+    return null;
   }
+
   return user.value;
 }
 

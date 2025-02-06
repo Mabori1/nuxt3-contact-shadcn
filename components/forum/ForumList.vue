@@ -15,12 +15,15 @@ const selectedQuestion = defineModel<number>("selectedQuestion", {
   required: false,
 });
 
-function getBadgeVariantFromLabel(label: string) {
-  if (["work"].includes(label.toLowerCase())) return "default";
+function getBadgeVariantFromLabel(tag: string) {
+  if (["Работа"].includes(tag.toLowerCase())) return "default";
 
-  if (["personal"].includes(label.toLowerCase())) return "outline";
+  if (["Хобби"].includes(tag.toLowerCase())) return "outline";
 
   return "secondary";
+}
+function formatTags(tag: string) {
+  return tag.trim().split(",");
 }
 </script>
 
@@ -81,11 +84,11 @@ function getBadgeVariantFromLabel(label: string) {
           </div>
           <div class="flex items-center gap-2">
             <Badge
-              v-for="label of item.labels"
-              :key="label.id"
-              :variant="getBadgeVariantFromLabel(label.label)"
+              v-for="(tag, idx) of formatTags(item.tags)"
+              :key="`tag${idx}`"
+              :variant="getBadgeVariantFromLabel(tag)"
             >
-              {{ label }}
+              {{ tag }}
             </Badge>
           </div>
         </button>

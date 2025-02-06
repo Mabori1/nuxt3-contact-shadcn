@@ -7,6 +7,7 @@ export async function createQuestion(data: IQuestionPost, authorId: number) {
       authorId: authorId,
       title: data.title,
       description: data.description,
+      tags: data.tags,
     },
   });
 }
@@ -18,7 +19,6 @@ export async function findQuestion(id: number): Promise<IQuestion> {
     },
     include: {
       answers: true,
-      labels: true,
     },
   });
 
@@ -40,17 +40,16 @@ export async function toggleReadQuestion(id: number, isRead: boolean) {
   });
 }
 
-export async function findAllQuestions(): Promise<IQuestion[]> {
+export async function findAllQuestions(): Promise<IQuestion[] | null> {
   const questions = await prisma.question.findMany({
     orderBy: { date: "desc" },
     include: {
       answers: true,
-      labels: true,
     },
   });
 
   if (!questions) {
-    throw new Error("Question not found");
+    return null;
   }
 
   return questions;

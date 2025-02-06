@@ -50,7 +50,7 @@ model Question {
   description String
   date        DateTime @default(now())
   read        Boolean  @default(false)
-  labels      Label[]
+  tags        String
   answers     Answer[]
 }
 
@@ -62,11 +62,4 @@ model Answer {
   questionId Int
   date       DateTime @default(now())
   text       String
-}
-
-model Label {
-  id         Int      @id @default(autoincrement())
-  question   Question @relation(fields: [questionId], references: [id])
-  questionId Int
-  label      String   @unique
 }

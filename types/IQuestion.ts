@@ -6,7 +6,7 @@ export interface IQuestion {
   description: string;
   date: Date;
   read: boolean;
-  labels: ILabel[];
+  tags: string;
   answers: IAnswer[];
 }
 
@@ -14,6 +14,7 @@ export interface IQuestionPost {
   id?: number;
   title: string;
   description: string;
+  tags: string;
 }
 
 export interface IAnswer {
@@ -26,9 +27,4 @@ export interface IAnswer {
 export interface IAnswerPost {
   text: string;
   questionId: number;
-}
-
-export interface ILabel {
-  id?: number;
-  label: string;
 }

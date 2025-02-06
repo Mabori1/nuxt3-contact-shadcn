@@ -14,7 +14,6 @@ import { toTypedSchema } from "@vee-validate/zod";
 import { ArrowLeft, CornerDownLeft, Eraser } from "lucide-vue-next";
 import { useForm } from "vee-validate";
 import * as z from "zod";
-import type { IQuestionPost } from "~/types/IQuestion";
 
 definePageMeta({
   middleware: "guest",
@@ -23,6 +22,10 @@ definePageMeta({
 const formSchema = toTypedSchema(
   z.object({
     title: z
+      .string()
+      .min(1, { message: "Must have at least 1 character" })
+      .max(50, { message: "Must have at more 50 character" }),
+    tags: z
       .string()
       .min(1, { message: "Must have at least 1 character" })
       .max(50, { message: "Must have at more 50 character" }),
@@ -45,7 +48,7 @@ const onSubmit = handleSubmit(async (values) => {
 
 <template>
   <div class="mx-4 flex h-screen items-center justify-center">
-    <Card class="h-1/2 w-1/2">
+    <Card class="h-auto w-1/2">
       <CardHeader class="space-y-1">
         <CardTitle class="text-2xl"> Создание темы форума </CardTitle>
       </CardHeader>
@@ -62,6 +65,24 @@ const onSubmit = handleSubmit(async (values) => {
                 <Input
                   type="text"
                   placeholder="Тема форума"
+                  v-bind="componentField"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+
+          <FormField
+            v-slot="{ componentField }"
+            name="tags"
+            :validate-on-blur="!isFieldDirty"
+          >
+            <FormItem>
+              <FormLabel>Тэги</FormLabel>
+              <FormControl>
+                <Input
+                  type="text"
+                  placeholder="Одно слово через запятую: Работа, Хобби, Новости"
                   v-bind="componentField"
                 />
               </FormControl>

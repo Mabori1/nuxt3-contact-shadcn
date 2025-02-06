@@ -26,13 +26,16 @@ export async function getSessionByAuthToken(
 ): Promise<ISession> {
   const user = await getUserByAuthToken(authToken);
   if (!user) {
-    throw new Error("get user by auth token: User not found");
+    throw createError({
+      statusCode: 404,
+      message: "get user by auth token: User not found",
+    });
   }
 
   return { authToken, user };
 }
 
-async function getUserByAuthToken(authToken: string): Promise<IUser> {
+async function getUserByAuthToken(authToken: string): Promise<IUser | null> {
   const session = await prisma.session.findUnique({
     where: {
       authToken,
@@ -43,6 +46,6 @@ async function getUserByAuthToken(authToken: string): Promise<IUser> {
   if (session) {
     return session.user;
   } else {
-    throw new Error("Session not found");
+    return null;
   }
 }
