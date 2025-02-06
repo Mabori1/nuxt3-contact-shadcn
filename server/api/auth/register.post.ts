@@ -1,6 +1,9 @@
 import bcrypt from "bcrypt";
 import { createUser } from "~/server/repositories/userRepository";
-import { makeSession } from "~/server/services/sessionService";
+import {
+  makeSession,
+  removeSessionByUserId,
+} from "~/server/services/sessionService";
 import { doesUserExists } from "~/server/services/userService";
 import { IUser } from "~/types/IUser";
 
@@ -26,6 +29,8 @@ export default defineEventHandler(async (event) => {
   };
 
   const user = await createUser(userData);
+
+  await removeSessionByUserId(user.id);
 
   return await makeSession(user, event);
 });

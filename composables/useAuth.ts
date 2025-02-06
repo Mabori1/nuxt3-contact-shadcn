@@ -3,7 +3,7 @@ import type { ISession } from "~/types/ISession";
 import type { IUser } from "~/types/IUser";
 
 export async function userLogout() {
-  await useFetch("/api/auth/logout");
+  await $fetch("/api/auth/logout");
   toast({
     title: "Logged out successfully",
   });
@@ -15,6 +15,9 @@ export const useAuthCookie = () => useCookie("auth_token");
 
 export async function useUser() {
   const authCookie = useAuthCookie().value;
+
+  console.log("authCookie", authCookie);
+
   if (!authCookie) {
     return null;
   }
@@ -42,12 +45,12 @@ export async function registerWithEmail(user: {
   password: string;
 }) {
   try {
-    const res = await useFetch<ISession>("/api/auth/register", {
+    const res = await $fetch<ISession>("/api/auth/register", {
       method: "post",
       body: user,
     });
 
-    if (!res.error) {
+    if (res) {
       useState("user").value = res;
       toast({ title: "Registered in successfully" });
       await useRouter().push("/");
@@ -62,7 +65,7 @@ export async function loginWithEmail(user: {
   password: string;
 }) {
   try {
-    const res = await useFetch<ISession>("/api/auth/login", {
+    const res = await $fetch<ISession>("/api/auth/login", {
       method: "post",
       body: user,
     });
