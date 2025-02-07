@@ -1,12 +1,6 @@
 <script setup lang="ts">
 import { Button } from "@/components/ui/button";
-import { CalendarIcon } from "@radix-icons/vue";
 import { Calendar2 } from "@/components/ui/calendar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import {
   Card,
   CardContent,
@@ -16,17 +10,17 @@ import {
 } from "@/components/ui/card";
 import {
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { useToast } from "@/components/ui/toast";
-import { toTypedSchema } from "@vee-validate/zod";
-import { useForm } from "vee-validate";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
 import {
   CalendarDate,
   DateFormatter,
@@ -35,16 +29,16 @@ import {
   today,
   type DateValue,
 } from "@internationalized/date";
-import { h } from "vue";
-import * as z from "zod";
-import { cn } from "@/lib/utils";
+import { CalendarIcon } from "@radix-icons/vue";
+import { toTypedSchema } from "@vee-validate/zod";
 import { toDate } from "radix-vue/date";
+import { useForm } from "vee-validate";
+import * as z from "zod";
 
 useSeoMeta({
   title: "Создание контакта",
 });
 
-const { toast } = useToast();
 const df = new DateFormatter("ru-RU", {
   dateStyle: "long",
 });
@@ -66,25 +60,7 @@ const value = computed({
   set: (val) => val,
 });
 
-const onSubmit = handleSubmit((values) => {
-  toast({
-    class: cn("top-4 right-1/2 flex fixed w-30"),
-    title: "Uh oh! Something went wrong.",
-    description: "ldldls",
-  });
-  // toast({
-  //   title: "You submitted the following values:",
-  //   description: h(
-  //     "pre",
-  //     { class: "mt-2 w-[340px] rounded-md bg-slate-950 p-4" },
-  //     h("code", { class: "text-white" }, JSON.stringify(values, null, 2)),
-  //   ),
-  // });
-});
-
-definePageMeta({
-  middleware: ["guest"],
-});
+const onSubmit = handleSubmit((values) => {});
 </script>
 
 <template>

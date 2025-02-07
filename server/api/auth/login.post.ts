@@ -1,26 +1,39 @@
 import bcrypt from "bcrypt";
+import { z } from "zod";
 import { getUser } from "~/server/repositories/userRepository";
-import {
-  makeSession,
-  removeSessionByUserId,
-} from "~/server/services/sessionService";
-import { IUser } from "~/types/IUser";
+
+const passwordValidation = new RegExp(
+  /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/,
+);
+
+const bodySchema = z.object({
+  email: z.string().email(),
+  password: z
+    .string()
+    .min(1, { message: "Must have at least 1 character" })
+    .regex(passwordValidation, {
+      message: "Your password is not valid",
+    }),
+});
 
 export default defineEventHandler(async (event) => {
-  const body: IUser = await readBody(event);
-  const { email, password } = body;
+  const { email, password } = await readValidatedBody(event, bodySchema.parse);
 
   const existsUser = await getUser(email);
   const isPasswordValid = await bcrypt.compare(password, existsUser.password);
 
-  if (!existsUser || !isPasswordValid) {
-    throw createError({
-      statusCode: 404,
-      statusMessage: "User not found",
+  if (email === existsUser.email && isPasswordValid) {
+    await setUserSession(event, {
+      user: {
+        id: existsUser.id,
+        username: existsUser.username,
+        email: existsUser.email,
+      },
     });
+    return {};
   }
-
-  await removeSessionByUserId(existsUser.id);
-
-  return await makeSession(existsUser, event);
+  throw createError({
+    statusCode: 401,
+    message: "Bad credentials",
+  });
 });

@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { Separator } from "@/components/ui/separator";
-import { userLogout } from "~/composables/useAuth";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -13,20 +12,22 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { CircleUser, PanelLeft, Search, SunMoon } from "lucide-vue-next";
-import type { IUser } from "~/types/IUser";
 
 type Theme = "light" | "dark";
 
 const setColorScheme = (newTheme: Theme) => {
   useColorMode().preference = newTheme;
 };
-
-const user = useState<IUser>("user");
-const logout = userLogout;
+const { loggedIn, user, clear: clearSession } = useUserSession();
 
 const hideSidebar = useHideSidebar();
 function toggleSidebar() {
   hideSidebar.value = !hideSidebar.value;
+}
+
+async function logout() {
+  await clearSession();
+  await navigateTo("/login");
 }
 </script>
 
@@ -75,12 +76,19 @@ function toggleSidebar() {
       <DropdownMenuContent align="end">
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem @click="useRouter().push('/register')"
+        <DropdownMenuItem
+          v-if="!loggedIn"
+          @click="useRouter().push('/register')"
           >Register</DropdownMenuItem
         >
-        <DropdownMenuItem>Support</DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem @click="logout">Logout</DropdownMenuItem>
+        <DropdownMenuItem v-if="!loggedIn" @click="useRouter().push('/login')"
+          >login</DropdownMenuItem
+        >
+        <DropdownMenuSeparator />
+        <DropdownMenuItem v-if="loggedIn" @click="logout"
+          >Logout</DropdownMenuItem
+        >
       </DropdownMenuContent>
     </DropdownMenu>
   </header>

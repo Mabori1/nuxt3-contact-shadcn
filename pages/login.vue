@@ -13,6 +13,8 @@ import { Input } from "@/components/ui/input";
 import { toTypedSchema } from "@vee-validate/zod";
 import { useForm } from "vee-validate";
 import * as z from "zod";
+import { toast } from "~/components/ui/toast";
+const { loggedIn, user, fetch: refreshSession } = useUserSession();
 
 const passwordValidation = new RegExp(
   /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/,
@@ -40,16 +42,17 @@ const { isFieldDirty, handleSubmit, resetForm } = useForm({
 });
 
 const onSubmit = handleSubmit(async (values) => {
-  await loginWithEmail(values);
-
-  // toast({
-  //   title: "You submitted the following values:",
-  //   description: h(
-  //     "pre",
-  //     { class: "mt-2 w-[340px] rounded-md bg-slate-950 p-4" },
-  //     h("code", { class: "text-white" }, JSON.stringify(values, null, 2)),
-  //   ),
-  // });
+  $fetch("/api/auth/login", {
+    method: "POST",
+    body: values,
+  })
+    .then(async () => {
+      await refreshSession();
+      await navigateTo("/");
+    })
+    .catch(() =>
+      toast({ variant: "destructive", title: "Неправильный логин или пароль" }),
+    );
 });
 
 const router = useRouter();
@@ -65,7 +68,7 @@ const goToRegister = () => {
         <CardTitle class="text-2xl"> Авторизация </CardTitle>
       </CardHeader>
       <CardContent class="grid gap-2">
-        <form class="items-center space-y-6" @submit="onSubmit">
+        <form class="items-center space-y-6" @submit.prevent="onSubmit">
           <FormField
             v-slot="{ componentField }"
             name="email"

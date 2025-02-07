@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   FormControl,
   FormField,
@@ -7,14 +8,14 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { toast } from "@/components/ui/toast";
 
 import { toTypedSchema } from "@vee-validate/zod";
 import { useForm } from "vee-validate";
-import { h } from "vue";
 import * as z from "zod";
+import { toast } from "~/components/ui/toast";
+
+const { loggedIn, user, fetch: refreshSession } = useUserSession();
 
 const passwordValidation = new RegExp(
   /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/,
@@ -57,16 +58,18 @@ const { isFieldDirty, handleSubmit, resetForm } = useForm({
 });
 
 const onSubmit = handleSubmit(async (values) => {
-  await registerWithEmail(values);
-
-  // toast({
-  //   title: "You submitted the following values:",
-  //   description: h(
-  //     "pre",
-  //     { class: "mt-2 w-[340px] rounded-md bg-slate-950 p-4" },
-  //     h("code", { class: "text-white" }, JSON.stringify(values, null, 2)),
-  //   ),
-  // });
+  // await registerWithEmail(values);
+  $fetch("/api/auth/register", {
+    method: "POST",
+    body: values,
+  })
+    .then(async () => {
+      await refreshSession();
+      await navigateTo("/");
+    })
+    .catch(() =>
+      toast({ variant: "destructive", title: "Неправильный логин или пароль" }),
+    );
 });
 </script>
 

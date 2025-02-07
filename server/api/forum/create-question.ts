@@ -1,5 +1,4 @@
 import { createQuestion } from "~/server/repositories/forumRepository";
-import { getUserBySessionToken } from "~/server/services/sessionService";
 import { IQuestionPost } from "~/types/IQuestion";
 
 export default defineEventHandler(async (event) => {
@@ -11,13 +10,10 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  const authToken = getCookie(event, "auth_token");
-  if (!authToken) {
-    throw createError({ statusCode: 401, statusMessage: "Unauthorized" });
-  }
-  const user = await getUserBySessionToken(authToken);
-  if (!user.id) {
-    throw createError({ statusCode: 401, statusMessage: "Unauthorized" });
+  const { user } = await requireUserSession(event);
+  if (!user) {
+    //toast({ variant: "destructive", title: "User not found" });
+    throw createError({ statusCode: 401, message: "User not found" });
   }
 
   return await createQuestion(body, user.id);

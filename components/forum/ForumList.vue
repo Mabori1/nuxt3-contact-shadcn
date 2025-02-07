@@ -16,9 +16,9 @@ const selectedQuestion = defineModel<number>("selectedQuestion", {
 });
 
 function getBadgeVariantFromLabel(tag: string) {
-  if (["Работа"].includes(tag.toLowerCase())) return "default";
+  if (["Работа".toLowerCase()].includes(tag.toLowerCase())) return "default";
 
-  if (["Хобби"].includes(tag.toLowerCase())) return "outline";
+  if (["Хобби".toLowerCase()].includes(tag.toLowerCase())) return "destructive";
 
   return "secondary";
 }

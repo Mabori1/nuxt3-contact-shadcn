@@ -2,7 +2,7 @@ import { toast } from "~/components/ui/toast";
 import type { IQuestion, IQuestionPost } from "~/types/IQuestion";
 
 export async function addNewQuestion(question: IQuestionPost) {
-  const res = await $fetch<IQuestionPost>("/api/forum/create-question", {
+  const res = await $fetch<IQuestionPost>("/api/question", {
     method: "post",
     body: question,
   });
@@ -19,12 +19,12 @@ export async function addNewQuestion(question: IQuestionPost) {
 }
 
 export async function getQuestions() {
-  const questions = await $fetch<IQuestion[]>("/api/forum/questions");
+  const questions = await $fetch<IQuestion[]>("/api/question");
 
   if (!questions) {
     toast({
       variant: "destructive",
-      title: `Темы не получены`,
+      title: "Темы не получены",
     });
     return [];
   }
@@ -32,7 +32,7 @@ export async function getQuestions() {
 }
 
 export async function updateQuestion(question: IQuestionPost) {
-  const res = await useFetch<IQuestionPost>("/api/forum/update-question", {
+  const res = await useFetch<IQuestionPost>("/api/question/", {
     method: "patch",
     body: question,
   });

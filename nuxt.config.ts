@@ -7,6 +7,7 @@ export default defineNuxtConfig({
     "shadcn-nuxt",
     "@nuxtjs/color-mode",
     "@prisma/nuxt",
+    "nuxt-auth-utils",
   ],
   colorMode: { classSuffix: "" },
   shadcn: {

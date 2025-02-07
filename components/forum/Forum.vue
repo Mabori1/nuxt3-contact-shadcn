@@ -10,7 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { refDebounced } from "@vueuse/core";
 import { Search } from "lucide-vue-next";
-import type { IAnswer, ILabel, IQuestion } from "~/types/IQuestion";
+import type { IAnswer, IQuestion } from "~/types/IQuestion";
 import ForumDisplay from "./ForumDisplay.vue";
 import ForumList from "./ForumList.vue";
 
@@ -20,12 +20,12 @@ interface QuestionProps {
 }
 
 const props = withDefaults(defineProps<QuestionProps>(), {
-  defaultLayout: () => [265, 440, 655],
+  defaultLayout: () => [440, 655],
 });
 const selectedQuestion = ref<number | undefined>(props.questions[0].id);
 const searchValue = ref("");
 const debouncedSearch = refDebounced(searchValue, 250);
-
+console.log("searchValue: ", searchValue.value);
 const filteredQuestionList = computed(() => {
   let output: IQuestion[] = [];
   const searchValue = debouncedSearch.value?.trim();
@@ -37,9 +37,7 @@ const filteredQuestionList = computed(() => {
         item.authorName?.includes(debouncedSearch.value) ||
         item.title.includes(debouncedSearch.value) ||
         item.description.includes(debouncedSearch.value) ||
-        item.labels.filter((label: ILabel) =>
-          label.label.includes(debouncedSearch.value),
-        ) ||
+        item.tags.includes(debouncedSearch.value) ||
         item.answers.filter((answer: IAnswer) =>
           answer.text.includes(debouncedSearch.value),
         )
@@ -75,11 +73,7 @@ const removeQuestion = (id: number) => {
       direction="horizontal"
       class="h-full max-h-[800px] items-stretch"
     >
-      <ResizablePanel
-        id="resize-panel-2"
-        :default-size="defaultLayout[1]"
-        :min-size="30"
-      >
+      <ResizablePanel id="resize-panel-2" :min-size="30">
         <Tabs default-value="all">
           <div class="flex items-center px-4 py-2">
             <h1 class="text-xl font-bold">Форум</h1>
@@ -105,6 +99,7 @@ const removeQuestion = (id: number) => {
                   class="absolute left-2 top-2.5 size-4 text-muted-foreground"
                 />
                 <Input
+                  type="text"
                   v-model="searchValue"
                   placeholder="Search"
                   class="pl-8"
@@ -127,7 +122,7 @@ const removeQuestion = (id: number) => {
         </Tabs>
       </ResizablePanel>
       <ResizableHandle id="resiz-handle-2" with-handle />
-      <ResizablePanel id="resize-panel-3" :default-size="defaultLayout[2]">
+      <ResizablePanel id="resize-panel-3">
         <ForumDisplay
           :question="selectedQuestionData"
           @remove-question="removeQuestion"

@@ -16,8 +16,6 @@ export const useAuthCookie = () => useCookie("auth_token");
 export async function useUser() {
   const authCookie = useAuthCookie().value;
 
-  console.log("authCookie", authCookie);
-
   if (!authCookie) {
     return null;
   }

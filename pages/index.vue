@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { useSeoMeta, useState } from "nuxt/app";
-import type { IUser } from "~/types/IUser";
+import { useSeoMeta } from "nuxt/app";
 
 useSeoMeta({
   title: "Контакты",
 });
 
-const user = useState<IUser>("user");
+const { user, loggedIn } = useUserSession();
+console.log(user.value, loggedIn.value);
 </script>
 <template>
   <div>
