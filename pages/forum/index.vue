@@ -18,6 +18,7 @@ onMounted(async () => {
 watch(questions, async (newQuestion, oldQuestion) => {
   if (newQuestion.length !== oldQuestion.length) {
     questions.value = await getQuestions();
+    useCountQuestions().value = questions.value.length;
   }
 });
 

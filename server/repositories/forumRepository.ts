@@ -55,6 +55,21 @@ export async function findAllQuestions(): Promise<IQuestion[] | null> {
   return questions;
 }
 
+export async function findAllAnswers(
+  questionId: number,
+): Promise<IAnswerPost[] | null> {
+  const answers = await prisma.answer.findMany({
+    where: { questionId },
+    orderBy: { date: "desc" },
+  });
+
+  if (!answers) {
+    return null;
+  }
+
+  return answers;
+}
+
 export async function createAnswer(data: IAnswerPost, authorId: number) {
   return await prisma.answer.create({
     data: {
@@ -86,10 +101,29 @@ export async function editQuestion(question: IQuestionPost) {
   });
 }
 
+export async function updateAnswer(answer: IAnswerPost) {
+  return await prisma.answer.update({
+    where: {
+      id: answer.id,
+    },
+    data: {
+      text: answer.text,
+    },
+  });
+}
+
 export async function deleteQuestion(questionId: number) {
   return await prisma.question.delete({
     where: {
       id: questionId,
+    },
+  });
+}
+
+export async function deleteAnswer(AnswerId: number) {
+  return await prisma.answer.delete({
+    where: {
+      id: AnswerId,
     },
   });
 }

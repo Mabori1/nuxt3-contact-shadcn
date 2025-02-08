@@ -32,7 +32,7 @@ export async function getQuestions() {
 }
 
 export async function updateQuestion(question: IQuestionPost) {
-  const res = await useFetch<IQuestionPost>("/api/question/", {
+  const res = await $fetch<IQuestionPost>(`/api/question/${question.id}`, {
     method: "patch",
     body: question,
   });
@@ -40,11 +40,11 @@ export async function updateQuestion(question: IQuestionPost) {
   if (!res) {
     toast({
       variant: "destructive",
-      title: `Тема не создана, ${res}`,
+      title: `Тема не изменена, ${question.title}`,
     });
   } else {
     await useRouter().push("/forum");
-    toast({ title: `Создана тема: ${useToastTitle().value}` });
+    toast({ title: `Успешно изменена тема: ${res.title}` });
   }
 }
 

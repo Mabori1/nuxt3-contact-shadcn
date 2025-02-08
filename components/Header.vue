@@ -81,11 +81,10 @@ async function logout() {
           @click="useRouter().push('/register')"
           >Register</DropdownMenuItem
         >
-        <DropdownMenuSeparator />
+        <DropdownMenuSeparator v-if="!loggedIn" />
         <DropdownMenuItem v-if="!loggedIn" @click="useRouter().push('/login')"
           >login</DropdownMenuItem
         >
-        <DropdownMenuSeparator />
         <DropdownMenuItem v-if="loggedIn" @click="logout"
           >Logout</DropdownMenuItem
         >

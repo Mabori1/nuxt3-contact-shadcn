@@ -25,6 +25,7 @@ export interface IAnswer {
 }
 
 export interface IAnswerPost {
+  id?: number;
   text: string;
   questionId: number;
 }

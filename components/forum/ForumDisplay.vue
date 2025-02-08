@@ -21,6 +21,8 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { Card, CardContent } from "@/components/ui/card";
+import { toTypedSchema } from "@vee-validate/zod";
 import { addDays, addHours, format, nextSaturday } from "date-fns";
 import { ru } from "date-fns/locale";
 import {
@@ -32,7 +34,9 @@ import {
   ReplyAll,
   Trash2,
 } from "lucide-vue-next";
+import { useForm } from "vee-validate";
 import { computed } from "vue";
+import * as z from "zod";
 import type { IQuestion } from "~/types/IQuestion";
 
 interface QuestionDisplayProps {
@@ -55,6 +59,25 @@ const emit = defineEmits(["remove-question"]);
 const removeQuestion = (id: number) => {
   emit("remove-question", id);
 };
+
+const { user } = useUserSession();
+
+const formSchema = toTypedSchema(
+  z.object({
+    text: z.string().min(2).max(150),
+  }),
+);
+
+const form = useForm({
+  validationSchema: formSchema,
+});
+
+const onSubmit = form.handleSubmit((values) => {
+  if (props.question?.id) {
+    addNewAnswer({ questionId: +props.question?.id, text: values.text });
+    console.log({ questionId: +props.question?.id, text: values.text });
+  }
+});
 </script>
 
 <template>
@@ -196,23 +219,42 @@ const removeQuestion = (id: number) => {
         </div>
       </div>
       <Separator />
-      <div class="flex-1 whitespace-pre-wrap p-4 text-sm">
-        {{ question.description }}
+      <div class="flex flex-col gap-4 text-sm">
+        <p class="ml-2 py-4">{{ question.description }}</p>
+        <Separator />
+        <Card v-for="answer in question.answers" class="py-1">
+          <CardDescription class="my-1 ml-2"
+            >Ответ от: {{ answer.authorName }}</CardDescription
+          >
+          <CardDescription class="my-1 ml-2 text-gray-500">
+            {{ answer.text }}</CardDescription
+          >
+        </Card>
       </div>
       <Separator class="mt-auto" />
       <div class="p-4">
         <form
+          @submit="onSubmit"
           class="relative overflow-hidden rounded-lg border bg-background focus-within:ring-1 focus-within:ring-ring"
         >
-          <Label for="message" class="sr-only"> Message </Label>
-          <Textarea
-            id="message"
-            :placeholder="`Ответ ${question.authorName}...`"
-            class="min-h-12 resize-none border-0 p-3 shadow-none focus-visible:ring-0"
-          />
+          <FormField v-slot="{ componentField }" name="text">
+            <FormItem>
+              <FormControl>
+                <Label for="message" class="sr-only"> Message </Label>
+                <Textarea
+                  id="message"
+                  :placeholder="`Ответ ${question.authorName}...`"
+                  class="min-h-12 resize-none border-0 p-3 shadow-none focus-visible:ring-0"
+                  v-bind="componentField"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+
           <div class="flex items-center p-3 pt-0">
             <Button type="submit" size="sm" class="ml-auto mt-1 gap-1.5">
-              Send Message
+              Send Message1
               <CornerDownLeft class="size-3.5" />
             </Button>
           </div>

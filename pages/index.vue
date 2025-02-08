@@ -5,8 +5,7 @@ useSeoMeta({
   title: "Контакты",
 });
 
-const { user, loggedIn } = useUserSession();
-console.log(user.value, loggedIn.value);
+const { user } = useUserSession();
 </script>
 <template>
   <div>

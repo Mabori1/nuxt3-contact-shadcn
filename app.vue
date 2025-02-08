@@ -5,7 +5,7 @@ nuxtApp.hook("page:finish", () => {
 });
 
 useState("hideSidebar", () => false);
-await useUser();
+useUserSession();
 </script>
 <template>
   <NuxtRouteAnnouncer />
