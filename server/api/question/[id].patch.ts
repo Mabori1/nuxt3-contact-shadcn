@@ -2,7 +2,7 @@ import { useValidatedParams, useValidatedBody, z, zh } from "h3-zod";
 import { editQuestion } from "~/server/repositories/forumRepository";
 import { IQuestionPost } from "~/types/IQuestion";
 
-export default eventHandler(async (event) => {
+export default defineEventHandler(async (event) => {
   const { id } = await useValidatedParams(event, {
     id: zh.intAsString,
   });

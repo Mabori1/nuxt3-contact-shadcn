@@ -14,7 +14,7 @@ import { toTypedSchema } from "@vee-validate/zod";
 import { useForm } from "vee-validate";
 import * as z from "zod";
 import { toast } from "~/components/ui/toast";
-const { loggedIn, user, fetch: refreshSession } = useUserSession();
+const { fetch: refreshSession } = useUserSession();
 
 const passwordValidation = new RegExp(
   /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/,
@@ -43,7 +43,7 @@ const { isFieldDirty, handleSubmit, resetForm } = useForm({
 
 const onSubmit = handleSubmit(async (values) => {
   $fetch("/api/auth/login", {
-    method: "POST",
+    method: "post",
     body: values,
   })
     .then(async () => {

@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { useSeoMeta } from "nuxt/app";
+import { ReloadIcon } from "@radix-icons/vue";
 import type { IQuestion } from "~/types/IQuestion";
 
-useSeoMeta({
+definePageMeta({
   title: "Форум",
 });
 
@@ -13,7 +13,8 @@ definePageMeta({
 const { data: questions } = useNuxtData<IQuestion[]>("questions");
 
 onMounted(async () => {
-  questions.value = await getQuestions();
+  questions.value = await useQuestions();
+  await refreshNuxtData("questions");
 });
 
 // watch(questions, async (newQuestion, oldQuestion) => {
@@ -24,11 +25,13 @@ onMounted(async () => {
 
 async function deleteQuestion(id: number) {
   await removeQuestion(id);
+  await refreshNuxtData("questions");
 }
 </script>
 <template>
-  <div>
-    <ForumEmpty v-if="!questions?.length" />
+  <div class="flex h-full items-center justify-center">
+    <ReloadIcon v-if="!questions" class="mt-20 size-14 animate-spin" />
+    <ForumEmpty v-else-if="questions.length === 0" />
     <Forum v-else :questions="questions" @remove-question="deleteQuestion" />
   </div>
 </template>

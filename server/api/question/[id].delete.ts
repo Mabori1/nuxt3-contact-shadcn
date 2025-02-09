@@ -5,6 +5,9 @@ import {
 
 export default defineEventHandler(async (event) => {
   const id = event.context.params?.id;
+
+  console.info("delete question: ", id);
+
   if (!id) {
     throw createError({
       statusCode: 400,

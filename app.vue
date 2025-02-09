@@ -8,6 +8,7 @@ useState("hideSidebar", () => false);
 useUserSession();
 </script>
 <template>
+  <NuxtLoadingIndicator />
   <NuxtRouteAnnouncer />
   <NuxtLayout>
     <Toaster />

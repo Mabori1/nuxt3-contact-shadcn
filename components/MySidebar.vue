@@ -25,8 +25,12 @@ onMounted(() => {
   hideSidebar.value = isMobile.value;
 });
 
-const countQuestions: number | undefined =
-  useNuxtData<IQuestion[]>("questions").data.value?.length;
+const { data: questions } = useNuxtData<IQuestion[]>("questions");
+const countQuestions = ref<number | undefined>(questions.value?.length);
+
+watch(questions, () => {
+  countQuestions.value = questions.value?.length;
+});
 
 const isOpen = ref(false);
 </script>

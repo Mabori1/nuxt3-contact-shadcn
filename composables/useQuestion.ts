@@ -1,23 +1,6 @@
 import { toast } from "~/components/ui/toast";
 import type { IQuestion, IQuestionPost } from "~/types/IQuestion";
 
-// export async function addNewQuestion(question: IQuestionPost) {
-//   const res = await $fetch<IQuestionPost>("/api/question", {
-//     method: "post",
-//     body: question,
-//   });
-//
-//   if (!res) {
-//     toast({
-//       variant: "destructive",
-//       title: `Тема не создана, ${res}`,
-//     });
-//   } else {
-//     await useRouter().push("/forum");
-//     toast({ title: `Создана тема: ${useToastTitle().value}` });
-//   }
-// }
-
 export async function addQuestion(newQuestion: IQuestionPost) {
   const { data: questions } = useNuxtData<IQuestion[]>("questions");
   let previousQuestions: IQuestion[] | null = [];
@@ -53,37 +36,16 @@ export async function addQuestion(newQuestion: IQuestionPost) {
   });
 }
 
-export async function getQuestions() {
+export async function useQuestions() {
   const { data } = await useAsyncData<IQuestion[]>("questions", () =>
     $fetch<IQuestion[]>("/api/question"),
   );
-
-  if (!data.value) {
-    toast({
-      variant: "destructive",
-      title: "Темы не получены",
-    });
-    return [];
-  }
   return data.value;
 }
 
-// export async function updateQuestion1(question: IQuestionPost) {
-//   const res = await $fetch<IQuestionPost>(`/api/question/${question.id}`, {
-//     method: "patch",
-//     body: question,
-//   });
-//
-//   if (!res) {
-//     toast({
-//       variant: "destructive",
-//       title: `Тема не изменена, ${question.title}`,
-//     });
-//   } else {
-//     await useRouter().push("/forum");
-//     toast({ title: `Успешно изменена тема: ${res.title}` });
-//   }
-// }
+export async function getQuestions() {
+  return await $fetch<IQuestion[]>("/api/question");
+}
 
 export async function updateQuestion(updateQuestion: IQuestionPost) {
   const { data: questions } = useNuxtData("questions");
@@ -153,6 +115,7 @@ export async function removeQuestion(id: number) {
       );
 
       toast({ title: "Тема успешно удалена" });
+      useRouter().push("/forum");
     },
     onResponseError() {
       // Rollback the data if the request failed.

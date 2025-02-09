@@ -71,12 +71,13 @@ const form = useForm({
   validationSchema: formSchema,
 });
 
-const onSubmit = form.handleSubmit((values) => {
+const onSubmit = form.handleSubmit(async (values) => {
   if (props.question?.id) {
     addNewAnswer({ questionId: +props.question?.id, text: values.text });
-    console.log({ questionId: +props.question?.id, text: values.text });
+    resetform();
   }
 });
+const resetform = form.resetForm;
 </script>
 
 <template>
@@ -249,7 +250,7 @@ const onSubmit = form.handleSubmit((values) => {
       <Separator class="mt-auto" />
       <div class="p-4">
         <form
-          @submit="onSubmit"
+          @submit.prevent="onSubmit"
           class="relative overflow-hidden rounded-lg border bg-background focus-within:ring-1 focus-within:ring-ring"
         >
           <FormField v-slot="{ componentField }" name="text">
