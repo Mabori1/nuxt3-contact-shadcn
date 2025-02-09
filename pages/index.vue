@@ -1,9 +1,6 @@
 <script setup lang="ts">
-definePageMeta({
-  title: "Контакты",
-  pageTransition: {
-    name: "rotate",
-  },
+useSeoMeta({
+  title: "CRM",
 });
 
 const { user } = useUserSession();

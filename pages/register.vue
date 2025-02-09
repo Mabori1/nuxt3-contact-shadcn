@@ -15,6 +15,10 @@ import { useForm } from "vee-validate";
 import * as z from "zod";
 import { toast } from "~/components/ui/toast";
 
+useSeoMeta({
+  title: "Регистрация",
+});
+
 const { loggedIn, user, fetch: refreshSession } = useUserSession();
 
 const passwordValidation = new RegExp(

@@ -2,7 +2,7 @@
 import { ReloadIcon } from "@radix-icons/vue";
 import type { IQuestion } from "~/types/IQuestion";
 
-definePageMeta({
+useSeoMeta({
   title: "Форум",
 });
 

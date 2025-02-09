@@ -35,7 +35,7 @@ import { toDate } from "radix-vue/date";
 import { useForm } from "vee-validate";
 import * as z from "zod";
 
-definePageMeta({
+useSeoMeta({
   title: "Создание контакта",
 });
 
