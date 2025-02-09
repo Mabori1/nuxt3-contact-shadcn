@@ -2,7 +2,7 @@ import { useValidatedBody, z } from "h3-zod";
 import { createAnswer } from "~/server/repositories/forumRepository";
 import { IAnswerPost } from "~/types/IQuestion";
 
-export default eventHandler(async (event) => {
+export default defineEventHandler(async (event) => {
   const body: IAnswerPost = await useValidatedBody(event, {
     questionId: z
       .number()

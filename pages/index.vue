@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { useSeoMeta } from "nuxt/app";
-
-useSeoMeta({
+definePageMeta({
   title: "Контакты",
+  pageTransition: {
+    name: "rotate",
+  },
 });
 
 const { user } = useUserSession();

@@ -17,6 +17,7 @@ import {
   Package2,
   Users,
 } from "lucide-vue-next";
+import type { IQuestion } from "~/types/IQuestion";
 
 const isMobile = useMediaQuery("(max-width: 768px)");
 const hideSidebar = useHideSidebar();
@@ -24,7 +25,12 @@ onMounted(() => {
   hideSidebar.value = isMobile.value;
 });
 
-const countQuestions = useCountQuestions();
+const { data: questions } = useNuxtData<IQuestion[]>("questions");
+const countQuestions = ref<number | undefined>(questions.value?.length);
+
+watch(questions, () => {
+  countQuestions.value = questions.value?.length;
+});
 
 const isOpen = ref(false);
 </script>
@@ -79,7 +85,7 @@ const isOpen = ref(false);
                 Все темы
               </a>
               <a
-                href="/forum/ask"
+                href="/forum/create"
                 class="ml-1 flex items-center gap-3 rounded-lg pl-2 text-muted-foreground transition-all hover:text-primary"
               >
                 <MessageCircleQuestion class="h-4 w-4" />

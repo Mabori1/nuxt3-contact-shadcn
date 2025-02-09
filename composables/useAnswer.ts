@@ -14,6 +14,7 @@ export async function addNewAnswer(answer: IAnswerPost) {
     });
   } else {
     toast({ title: "Ответ успешно создан" });
+    refreshNuxtData("questions");
   }
 }
 

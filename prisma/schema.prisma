@@ -15,21 +15,11 @@ model User {
   email    String     @unique
   username String     @unique
   password String
-  session  Session?
   contacts Contact[]
   question Question[]
   answer   Answer[]
 }
 
-model Session {
-  id        Int       @id @default(autoincrement())
-  authToken String    @unique
-  user      User      @relation(fields: [userId], references: [id])
-  userId    Int       @unique
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
-}
 
 model Contact {
   id        Int      @id @default(autoincrement())
@@ -38,13 +28,13 @@ model Contact {
   avatarUrl String?
   phone     String
   birthday  DateTime
-  author    User     @relation(fields: [authorId], references: [id])
+  author    User     @relation(fields: [authorId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   authorId  Int
 }
 
 model Question {
   id          Int      @id @default(autoincrement())
-  author      User     @relation(fields: [authorId], references: [id])
+  author      User     @relation(fields: [authorId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   authorId    Int
   title       String   @unique
   description String
@@ -56,9 +46,9 @@ model Question {
 
 model Answer {
   id         Int      @id @default(autoincrement())
-  author     User     @relation(fields: [authorId], references: [id])
+  author     User     @relation(fields: [authorId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   authorId   Int
-  question   Question @relation(fields: [questionId], references: [id])
+  question   Question @relation(fields: [questionId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   questionId Int
   date       DateTime @default(now())
   text       String

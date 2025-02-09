@@ -2,7 +2,7 @@ import { findAllQuestions } from "~/server/repositories/forumRepository";
 import { getUserById } from "~/server/repositories/userRepository";
 import { IAnswer, IQuestion } from "~/types/IQuestion";
 
-export default eventHandler(async (event) => {
+export default defineEventHandler(async (event) => {
   await requireUserSession(event);
 
   // List todos for the current user

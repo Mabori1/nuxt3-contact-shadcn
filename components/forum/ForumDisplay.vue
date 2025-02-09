@@ -2,6 +2,7 @@
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
+import { Card } from "@/components/ui/card";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,7 +22,6 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Card, CardContent } from "@/components/ui/card";
 import { toTypedSchema } from "@vee-validate/zod";
 import { addDays, addHours, format, nextSaturday } from "date-fns";
 import { ru } from "date-fns/locale";
@@ -33,6 +33,7 @@ import {
   Reply,
   ReplyAll,
   Trash2,
+  Edit2,
 } from "lucide-vue-next";
 import { useForm } from "vee-validate";
 import { computed } from "vue";
@@ -60,8 +61,6 @@ const removeQuestion = (id: number) => {
   emit("remove-question", id);
 };
 
-const { user } = useUserSession();
-
 const formSchema = toTypedSchema(
   z.object({
     text: z.string().min(2).max(150),
@@ -72,18 +71,35 @@ const form = useForm({
   validationSchema: formSchema,
 });
 
-const onSubmit = form.handleSubmit((values) => {
+const onSubmit = form.handleSubmit(async (values) => {
   if (props.question?.id) {
     addNewAnswer({ questionId: +props.question?.id, text: values.text });
-    console.log({ questionId: +props.question?.id, text: values.text });
+    resetform();
   }
 });
+const resetform = form.resetForm;
 </script>
 
 <template>
   <div class="flex h-full flex-col">
     <div class="flex items-center p-2">
       <div class="flex items-center gap-2">
+        <Separator orientation="vertical" class="mx-1 h-6" />
+        <Tooltip>
+          <TooltipTrigger as-child>
+            <Button
+              @click="question && removeQuestion(question.id)"
+              variant="ghost"
+              size="icon"
+              :disabled="!question"
+            >
+              <Edit2 class="size-4" />
+              <span class="sr-only">Редактировать тему форума</span>
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>Удалить тему форума</TooltipContent>
+        </Tooltip>
+        <Separator orientation="vertical" class="mx-1 h-6" />
         <Tooltip>
           <TooltipTrigger as-child>
             <Button
@@ -234,7 +250,7 @@ const onSubmit = form.handleSubmit((values) => {
       <Separator class="mt-auto" />
       <div class="p-4">
         <form
-          @submit="onSubmit"
+          @submit.prevent="onSubmit"
           class="relative overflow-hidden rounded-lg border bg-background focus-within:ring-1 focus-within:ring-ring"
         >
           <FormField v-slot="{ componentField }" name="text">

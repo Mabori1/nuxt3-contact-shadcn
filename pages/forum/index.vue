@@ -1,35 +1,37 @@
 <script setup lang="ts">
-import { useSeoMeta } from "nuxt/app";
+import { ReloadIcon } from "@radix-icons/vue";
 import type { IQuestion } from "~/types/IQuestion";
 
-useSeoMeta({
+definePageMeta({
   title: "Форум",
 });
 
 definePageMeta({
   middleware: ["guest"],
 });
-const questions = ref<IQuestion[]>([]);
+
+const { data: questions } = useNuxtData<IQuestion[]>("questions");
 
 onMounted(async () => {
-  questions.value = await getQuestions();
+  questions.value = await useQuestions();
+  await refreshNuxtData("questions");
 });
 
-watch(questions, async (newQuestion, oldQuestion) => {
-  if (newQuestion.length !== oldQuestion.length) {
-    questions.value = await getQuestions();
-    useCountQuestions().value = questions.value.length;
-  }
-});
+// watch(questions, async (newQuestion, oldQuestion) => {
+//   if (newQuestion.length !== oldQuestion.length) {
+//     useCountQuestions().value = questions.value.length;
+//   }
+// });
 
 async function deleteQuestion(id: number) {
   await removeQuestion(id);
-  questions.value = await getQuestions();
+  await refreshNuxtData("questions");
 }
 </script>
 <template>
-  <div>
-    <ForumEmpty v-if="!questions?.length" />
+  <div class="flex h-full items-center justify-center">
+    <ReloadIcon v-if="!questions" class="mt-20 size-14 animate-spin" />
+    <ForumEmpty v-else-if="questions.length === 0" />
     <Forum v-else :questions="questions" @remove-question="deleteQuestion" />
   </div>
 </template>

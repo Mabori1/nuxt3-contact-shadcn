@@ -41,7 +41,7 @@ const { isFieldDirty, handleSubmit, resetForm } = useForm({
 
 const onSubmit = handleSubmit(async (values) => {
   useToastTitle().value = values.title;
-  await addNewQuestion(values);
+  await addQuestion(values);
 });
 </script>
 
