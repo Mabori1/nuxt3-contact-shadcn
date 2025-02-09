@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useSeoMeta } from "nuxt/app";
-import type { IQuestion } from "~/types/IQuestion";
 
 useSeoMeta({
   title: "Форум",
@@ -9,15 +8,15 @@ useSeoMeta({
 definePageMeta({
   middleware: ["guest"],
 });
-const questions = ref<IQuestion[]>([]);
+
+const { data: questions } = useNuxtData("questions");
 
 onMounted(async () => {
-  questions.value = await getQuestions();
+  await getQuestions();
 });
 
 watch(questions, async (newQuestion, oldQuestion) => {
   if (newQuestion.length !== oldQuestion.length) {
-    questions.value = await getQuestions();
     useCountQuestions().value = questions.value.length;
   }
 });
