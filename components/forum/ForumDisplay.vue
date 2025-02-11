@@ -310,7 +310,7 @@ async function deleteQuestion(id: number) {
             <Card
               v-for="answer in question.answers"
               :key="answer.date.toString()"
-              class="m-2 py-1"
+              class="m-2 py-1 hover:bg-accent/20 focus:bg-muted/35"
             >
               <CardHeader
                 >Ответ от: {{ answer.authorName }}

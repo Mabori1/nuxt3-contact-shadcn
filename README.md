@@ -2,7 +2,15 @@
 
 Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
 
-## Setup
+## Скопировать репозиторий на свой компьютер
+
+```bash
+
+git clone git@github.com:Mabori1/nuxt3-contact-shadcn.git
+
+```
+
+## Установить все зависимости
 
 Make sure to install dependencies:
 
@@ -10,35 +18,21 @@ Make sure to install dependencies:
 # npm
 npm install
 
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
 ```
 
-## Development Server
+## Создать файл .env (можно переименовать .env.example)
 
-Start the development server on `http://localhost:3000`:
+## Запустить приложение в режиме разработчика
+
+Start the development server on `http://localhost:3010`:
 
 ```bash
 # npm
 npm run dev
 
-# pnpm
-pnpm dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
 ```
 
-## Production
+## Запустить сборку приложения
 
 Build the application for production:
 
@@ -46,14 +40,6 @@ Build the application for production:
 # npm
 npm run build
 
-# pnpm
-pnpm build
-
-# yarn
-yarn build
-
-# bun
-bun run build
 ```
 
 Locally preview production build:
@@ -62,14 +48,14 @@ Locally preview production build:
 # npm
 npm run preview
 
-# pnpm
-pnpm preview
+```
 
-# yarn
-yarn preview
+## Запустить приложение в режиме продакшена
 
-# bun
-bun run preview
+```bash
+# npm
+npm run start
+
 ```
 
 Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
