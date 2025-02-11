@@ -32,7 +32,6 @@ async function toggleReadQuestion(id: number) {
   if (!user.value?.readed.includes(id)) {
     await readToggleQuestion(id);
     await refreshSession();
-    console.log("yes");
   }
 }
 
@@ -53,7 +52,7 @@ const handleBlur = () => {
 </script>
 
 <template>
-  <ScrollArea class="flex h-screen">
+  <ScrollArea class="flex h-full">
     <div v-if="items.length === 0" class="text-center text-2xl">
       Нет тем форума
     </div>

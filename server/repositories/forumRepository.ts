@@ -79,25 +79,10 @@ export async function findAllQuestions(): Promise<IQuestion[] | null> {
   return questions;
 }
 
-export async function findAllAnswers(
-  questionId: number,
-): Promise<IAnswerPost[] | null> {
-  const answers = await prisma.answer.findMany({
-    where: { questionId },
-    orderBy: { date: "desc" },
-  });
-
-  if (!answers) {
-    return null;
-  }
-
-  return answers;
-}
-
-export async function createAnswer(data: IAnswerPost, authorId: number) {
+export async function createAnswer(data: IAnswerPost) {
   return await prisma.answer.create({
     data: {
-      authorId: authorId,
+      authorId: data.authorId,
       questionId: data.questionId,
       text: data.text,
     },

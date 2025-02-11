@@ -34,11 +34,12 @@ import {
   ReplyAll,
   Trash2,
   Edit2,
+  CircleX,
 } from "lucide-vue-next";
 import { useForm } from "vee-validate";
 import { computed } from "vue";
 import * as z from "zod";
-import type { IQuestion, IQuestionPost } from "~/types/IQuestion";
+import type { IAnswerPost, IQuestion, IQuestionPost } from "~/types/IQuestion";
 
 interface QuestionDisplayProps {
   question: IQuestion | undefined;
@@ -54,6 +55,7 @@ const questionFallbackName = computed(() => {
 });
 
 const today = new Date();
+const { user } = useUserSession();
 
 const emit = defineEmits(["remove-question"]);
 
@@ -72,8 +74,13 @@ const form = useForm({
 });
 
 const onSubmit = form.handleSubmit(async (values) => {
-  if (props.question?.id) {
-    addNewAnswer({ questionId: +props.question?.id, text: values.text });
+  if (props.question?.id && user.value?.id) {
+    const newAnswer = {
+      questionId: +props.question?.id,
+      authorId: user.value.id,
+      text: values.text,
+    };
+    await addAnswer(newAnswer);
     resetform();
   }
 });
@@ -89,7 +96,11 @@ const { fetch: refreshSession } = useUserSession();
 async function toggleReadQuestion(id: number) {
   await readToggleQuestion(id);
   await refreshSession();
-  console.log("yes2");
+}
+
+async function delAnswer(answer: IAnswerPost) {
+  await removeAnswer(answer);
+  await refreshNuxtData("questions");
 }
 </script>
 
@@ -247,46 +258,57 @@ async function toggleReadQuestion(id: number) {
         </div>
       </div>
       <Separator />
-      <div class="flex flex-col gap-4 text-sm">
+      <div class="flex flex-col gap-1 text-sm">
         <p class="ml-2 py-4">{{ question.description }}</p>
         <Separator />
-        <Card v-for="answer in question.answers" class="py-1">
-          <CardDescription class="my-1 ml-2"
-            >Ответ от: {{ answer.authorName }}</CardDescription
-          >
-          <CardDescription class="my-1 ml-2 text-gray-500">
-            {{ answer.text }}</CardDescription
-          >
-        </Card>
-      </div>
-      <Separator class="mt-auto" />
-      <div class="p-4">
-        <form
-          @submit.prevent="onSubmit"
-          class="relative overflow-hidden rounded-lg border bg-background focus-within:ring-1 focus-within:ring-ring"
-        >
-          <FormField v-slot="{ componentField }" name="text">
-            <FormItem>
-              <FormControl>
-                <Label for="message" class="sr-only"> Message </Label>
-                <Textarea
-                  id="message"
-                  :placeholder="`Ответ ${question.authorName}...`"
-                  class="min-h-12 resize-none border-0 p-3 shadow-none focus-visible:ring-0"
-                  v-bind="componentField"
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          </FormField>
 
-          <div class="flex items-center p-3 pt-0">
-            <Button type="submit" size="sm" class="ml-auto mt-1 gap-1.5">
-              Send Message1
-              <CornerDownLeft class="size-3.5" />
-            </Button>
+        <ScrollArea class="flex h-[67vh]">
+          <div class="flex flex-col">
+            <Card
+              v-for="answer in question.answers"
+              :key="answer.date.toString()"
+              class="m-2 py-1"
+            >
+              <CardHeader
+                >Ответ от: {{ answer.authorName }}
+                <CircleX class="size-4" @click="delAnswer(answer)" />
+              </CardHeader>
+              <CardDescription class="my-1 ml-2"></CardDescription>
+              <CardDescription class="my-1 ml-2 text-gray-500">
+                {{ answer.text }}</CardDescription
+              >
+            </Card>
+            <Separator />
+            <div class="mt-auto p-4">
+              <form
+                @submit.prevent="onSubmit"
+                class="relative overflow-hidden rounded-lg border bg-background focus-within:ring-1 focus-within:ring-ring"
+              >
+                <FormField v-slot="{ componentField }" name="text">
+                  <FormItem>
+                    <FormControl>
+                      <Label for="message" class="sr-only"> Message </Label>
+                      <Textarea
+                        id="message"
+                        :placeholder="`Ответ ${question.authorName}...`"
+                        class="min-h-12 resize-none border-0 p-3 shadow-none focus-visible:ring-0"
+                        v-bind="componentField"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                </FormField>
+
+                <div class="flex items-center p-3 pt-0">
+                  <Button type="submit" size="sm" class="ml-auto mt-1 gap-1.5">
+                    Send Message1
+                    <CornerDownLeft class="size-3.5" />
+                  </Button>
+                </div>
+              </form>
+            </div>
           </div>
-        </form>
+        </ScrollArea>
       </div>
     </div>
     <div v-else class="p-8 text-center text-muted-foreground">

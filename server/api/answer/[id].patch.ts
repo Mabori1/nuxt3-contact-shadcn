@@ -7,9 +7,8 @@ export default defineEventHandler(async (event) => {
     id: zh.intAsString,
   });
   const answer: IAnswerPost = await useValidatedBody(event, {
-    questionId: z
-      .number()
-      .min(1, { message: "Must have at least 1 character" }),
+    authorId: z.number().positive({ message: "Must be a positive number" }),
+    questionId: z.number().positive({ message: "Must be a positive number" }),
     text: z
       .string()
       .min(1, { message: "Must have at least 1 character" })

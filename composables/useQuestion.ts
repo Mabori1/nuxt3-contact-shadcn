@@ -32,6 +32,8 @@ async function handleRequest(
         (fetchedQuestions) => (questions.value = fetchedQuestions),
       );
       toast({ title: successMessage });
+
+      refreshNuxtData("questions");
       if (redirect) useRouter().push(redirect);
     },
     onResponseError() {
@@ -45,7 +47,7 @@ async function handleRequest(
 }
 
 export async function addQuestion(question: IQuestionPost) {
-  return handleRequest(
+  return await handleRequest(
     `/api/question`,
     "post",
     question,
@@ -56,7 +58,7 @@ export async function addQuestion(question: IQuestionPost) {
 }
 
 export async function updateQuestion(updateQuestion: IQuestionPost) {
-  return handleRequest(
+  return await handleRequest(
     `/api/question/${updateQuestion.id}`,
     "patch",
     updateQuestion,
@@ -67,13 +69,13 @@ export async function updateQuestion(updateQuestion: IQuestionPost) {
 }
 
 export async function readToggleQuestion(questionId: number) {
-  return $fetch(`/api/question/read/${questionId}`, {
+  return await $fetch(`/api/question/read/${questionId}`, {
     method: "patch",
   });
 }
 
 export async function removeQuestion(id: number) {
-  return handleRequest(
+  return await handleRequest(
     `/api/question/${id}`,
     "delete",
     null,
