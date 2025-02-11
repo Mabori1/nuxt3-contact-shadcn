@@ -20,7 +20,7 @@ async function handleRequest(
   errorMessage: string,
   redirect: string | null = null,
 ) {
-  const { data: questions } = useNuxtData<IQuestion[]>("questions");
+  const questions = useState<IQuestion[]>("questions");
   let previousQuestions = questions.value;
 
   return $fetch(url, {
@@ -33,16 +33,13 @@ async function handleRequest(
       );
       toast({ title: successMessage });
 
-      refreshNuxtData("questions");
       if (redirect) useRouter().push(redirect);
     },
     onResponseError() {
       questions.value = previousQuestions;
       toast({ variant: "destructive", title: errorMessage });
     },
-    async onResponse() {
-      await refreshNuxtData("questions");
-    },
+    async onResponse() {},
   });
 }
 

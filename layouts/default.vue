@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const { data: questions } = useNuxtData<IQuestion[]>("questions");
+const questions = useState<IQuestion[]>("questions");
 questions.value = await getQuestions();
 </script>
 <template>

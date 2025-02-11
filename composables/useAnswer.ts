@@ -9,7 +9,7 @@ async function handleRequest(
   errorMessage: string,
   redirect: string | null = null,
 ) {
-  const { data: questions } = useNuxtData<IQuestion[]>("questions");
+  const questions = useState<IQuestion[]>("questions");
   let previousQuestions = questions.value;
 
   return await $fetch(url, {
@@ -21,16 +21,13 @@ async function handleRequest(
         (fetchedQuestions) => (questions.value = fetchedQuestions),
       );
       toast({ title: successMessage });
-      refreshNuxtData("questions");
       if (redirect) useRouter().push(redirect);
     },
     onResponseError() {
       questions.value = previousQuestions;
       toast({ variant: "destructive", title: errorMessage });
     },
-    async onResponse() {
-      await refreshNuxtData("questions");
-    },
+    async onResponse() {},
   });
 }
 
@@ -44,33 +41,14 @@ export async function addAnswer(answer: IAnswerPost) {
   );
 }
 
-export async function getAnswers(questionId: number) {
-  const answers = await $fetch<IAnswerPost[]>(`/api/answer/${questionId}`);
-
-  if (!answers) {
-    toast({
-      variant: "destructive",
-      title: "Ответы не получены",
-    });
-    return undefined;
-  }
-  return answers;
-}
-
-export async function updateAnswer(answer: IAnswerPost) {
-  const res = await $fetch<IAnswerPost>(`/api/answer/${answer.id}`, {
-    method: "patch",
-    body: answer,
-  });
-
-  if (!res) {
-    toast({
-      variant: "destructive",
-      title: `Текст не изменён, ${answer.text}`,
-    });
-  } else {
-    toast({ title: `Текст успешно изменён: ${res.text}` });
-  }
+export async function useUpdateAnswer(answer: IAnswerPost) {
+  return await handleRequest(
+    `/api/answer/${answer.id}`,
+    "patch",
+    answer,
+    "Ответ успешно обновлен",
+    "Ответ не обновлен.",
+  );
 }
 
 export async function removeAnswer(answer: IAnswerPost) {

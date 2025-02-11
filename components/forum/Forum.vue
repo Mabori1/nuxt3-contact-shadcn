@@ -14,24 +14,18 @@ import type { IAnswer, IQuestion } from "~/types/IQuestion";
 import ForumDisplay from "./ForumDisplay.vue";
 import ForumList from "./ForumList.vue";
 
-interface QuestionProps {
-  questions: IQuestion[];
-  defaultLayout?: number[];
-}
+const questions = useState<IQuestion[]>("questions");
 
-const props = withDefaults(defineProps<QuestionProps>(), {
-  defaultLayout: () => [440, 655],
-});
-const selectedQuestion = ref<number | undefined>(props.questions[0].id);
+const selectedQuestion = ref<number | undefined>(questions.value[0].id);
 const searchValue = ref("");
 const debouncedSearch = refDebounced(searchValue, 250);
 const filteredQuestionList = computed(() => {
   let output: IQuestion[] = [];
   const searchValue = debouncedSearch.value?.trim();
   if (!searchValue) {
-    output = props.questions;
+    output = questions.value;
   } else {
-    output = props.questions.filter((item) => {
+    output = questions.value.filter((item) => {
       return (
         item.authorName?.includes(debouncedSearch.value) ||
         item.title.includes(debouncedSearch.value) ||
@@ -56,17 +50,15 @@ const unreadQuestionList = computed(() =>
 );
 
 const selectedQuestionData = computed(() => {
-  if (props.questions.length !== 0) {
-    return props.questions.find((item) => item.id === selectedQuestion.value);
+  if (questions.value.length !== 0) {
+    return questions.value.find((item) => item.id === selectedQuestion.value);
   }
   return undefined;
 });
 
-const emit = defineEmits(["remove-question"]);
-
-const removeQuestion = (id: number) => {
-  emit("remove-question", id);
-};
+watch(questions, async () => {
+  useState<IQuestion[]>("questions").value = await getQuestions();
+});
 </script>
 
 <template>
@@ -145,10 +137,7 @@ const removeQuestion = (id: number) => {
       </ResizablePanel>
       <ResizableHandle id="resiz-handle-2" with-handle />
       <ResizablePanel id="resize-panel-3">
-        <ForumDisplay
-          :question="selectedQuestionData"
-          @remove-question="removeQuestion"
-        />
+        <ForumDisplay :question="selectedQuestionData" />
       </ResizablePanel>
     </ResizablePanelGroup>
   </TooltipProvider>

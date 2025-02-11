@@ -35,11 +35,14 @@ import {
   Trash2,
   Edit2,
   CircleX,
+  Pencil,
+  CornerUpLeft,
 } from "lucide-vue-next";
 import { useForm } from "vee-validate";
 import { computed } from "vue";
 import * as z from "zod";
 import type { IAnswerPost, IQuestion, IQuestionPost } from "~/types/IQuestion";
+import { toast } from "../ui/toast";
 
 interface QuestionDisplayProps {
   question: IQuestion | undefined;
@@ -57,12 +60,6 @@ const questionFallbackName = computed(() => {
 const today = new Date();
 const { user } = useUserSession();
 
-const emit = defineEmits(["remove-question"]);
-
-const removeQuestion = (id: number) => {
-  emit("remove-question", id);
-};
-
 const formSchema = toTypedSchema(
   z.object({
     text: z.string().min(2).max(150),
@@ -73,6 +70,50 @@ const form = useForm({
   validationSchema: formSchema,
 });
 
+const isUpdatedAnswer = ref(false);
+let idUpdatedAnswer: number | undefined = undefined;
+
+function onEditAnswer(answer: IAnswerPost) {
+  if (!user.value || user.value.id !== answer.authorId) {
+    toast({
+      variant: "destructive",
+      title: "Вы не можете редактировать чужой ответ",
+    });
+    return;
+  }
+  isUpdatedAnswer.value = true;
+  idUpdatedAnswer = answer.id;
+  form.setValues({
+    text: answer.text,
+  });
+}
+function onCanseled() {
+  isUpdatedAnswer.value = false;
+  idUpdatedAnswer = undefined;
+  form.resetForm();
+}
+async function onUpdateAnswer() {
+  if (props.question?.id && user.value?.id && form.values.text) {
+    const findedAnswer = toRaw(props.question.answers).find(
+      (item) => item.id === idUpdatedAnswer,
+    );
+    if (form.values.text === findedAnswer?.text) {
+      toast({ variant: "destructive", title: "Ответ не изменился" });
+      return;
+    }
+
+    const updatedAnswer: IAnswerPost = {
+      id: idUpdatedAnswer,
+      text: form.values.text,
+      questionId: +props.question?.id,
+      authorId: user.value.id,
+    };
+    await useUpdateAnswer(updatedAnswer);
+    isUpdatedAnswer.value = false;
+  }
+  form.resetForm();
+}
+
 const onSubmit = form.handleSubmit(async (values) => {
   if (props.question?.id && user.value?.id) {
     const newAnswer = {
@@ -81,13 +122,12 @@ const onSubmit = form.handleSubmit(async (values) => {
       text: values.text,
     };
     await addAnswer(newAnswer);
-    resetform();
+    form.resetForm();
   }
 });
-const resetform = form.resetForm;
 
 const updateCurrentQuestion = (question: IQuestionPost) => {
-  useNuxtData<IQuestionPost>("updatedQuestion").data.value = question;
+  useState<IQuestionPost>("updatedQuestion").value = question;
   navigateTo("/forum/update"); // Переход на страницу редактирования
 };
 
@@ -100,7 +140,10 @@ async function toggleReadQuestion(id: number) {
 
 async function delAnswer(answer: IAnswerPost) {
   await removeAnswer(answer);
-  await refreshNuxtData("questions");
+}
+
+async function deleteQuestion(id: number) {
+  await removeQuestion(id);
 }
 </script>
 
@@ -127,7 +170,7 @@ async function delAnswer(answer: IAnswerPost) {
         <Tooltip>
           <TooltipTrigger as-child>
             <Button
-              @click="question && removeQuestion(question.id)"
+              @click="question && deleteQuestion(question.id)"
               variant="ghost"
               size="icon"
               :disabled="!question"
@@ -271,7 +314,10 @@ async function delAnswer(answer: IAnswerPost) {
             >
               <CardHeader
                 >Ответ от: {{ answer.authorName }}
-                <CircleX class="size-4" @click="delAnswer(answer)" />
+                <div class="flex gap-3">
+                  <Pencil class="size-3.5" @click="onEditAnswer(answer)" />
+                  <CircleX class="size-4" @click="delAnswer(answer)" />
+                </div>
               </CardHeader>
               <CardDescription class="my-1 ml-2"></CardDescription>
               <CardDescription class="my-1 ml-2 text-gray-500">
@@ -300,10 +346,35 @@ async function delAnswer(answer: IAnswerPost) {
                 </FormField>
 
                 <div class="flex items-center p-3 pt-0">
-                  <Button type="submit" size="sm" class="ml-auto mt-1 gap-1.5">
-                    Send Message1
+                  <Button
+                    v-if="!isUpdatedAnswer"
+                    type="submit"
+                    size="sm"
+                    class="ml-auto mt-1 gap-1.5"
+                  >
+                    Создать ответ
                     <CornerDownLeft class="size-3.5" />
                   </Button>
+                  <div v-else class="ml-auto flex gap-4">
+                    <Button
+                      type="text"
+                      @click="onCanseled"
+                      size="sm"
+                      class="ml-auto mt-1 gap-1.5"
+                    >
+                      Отмена
+                      <CornerUpLeft class="size-3.5" />
+                    </Button>
+                    <Button
+                      type="text"
+                      @click.prevent="onUpdateAnswer"
+                      size="sm"
+                      class="ml-auto mt-1 gap-1.5"
+                    >
+                      Обновить ответ
+                      <CornerDownLeft class="size-3.5" />
+                    </Button>
+                  </div>
                 </div>
               </form>
             </div>

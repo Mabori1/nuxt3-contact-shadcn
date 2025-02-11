@@ -22,7 +22,7 @@ definePageMeta({
   middleware: "guest",
 });
 
-const { data: question } = useNuxtData<IQuestionPost>("updatedQuestion");
+const question = useState<IQuestionPost>("updatedQuestion");
 
 const formSchema = toTypedSchema(
   z.object({
