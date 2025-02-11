@@ -63,8 +63,8 @@ const handleBlur = () => {
           :key="item.id"
           :class="
             cn(
-              'flex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent',
-              selectedQuestion === item.id && 'bg-muted',
+              'flex flex-col items-start gap-2 rounded-lg border p-3 text-left text-sm transition-all hover:bg-accent/20',
+              selectedQuestion === item.id && 'bg-muted/35',
             )
           "
           @click="selectedQuestion = item.id"
@@ -106,7 +106,7 @@ const handleBlur = () => {
             </div>
           </div>
           <div class="line-clamp-2 text-xs text-muted-foreground">
-            {{ item.description.substring(0, 300) }}
+            {{ item.description.substring(0, 100) + "..." }}
           </div>
           <div class="flex items-center gap-2">
             <Badge
