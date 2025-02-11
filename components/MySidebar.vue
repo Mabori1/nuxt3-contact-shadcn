@@ -25,7 +25,7 @@ onMounted(() => {
   hideSidebar.value = isMobile.value;
 });
 
-const { data: questions } = useNuxtData<IQuestion[]>("questions");
+const questions = useState<IQuestion[]>("questions");
 const countQuestions = ref<number | undefined>(questions.value?.length);
 
 watch(questions, () => {

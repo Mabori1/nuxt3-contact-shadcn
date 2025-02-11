@@ -4,9 +4,8 @@ import { IAnswerPost } from "~/types/IQuestion";
 
 export default defineEventHandler(async (event) => {
   const body: IAnswerPost = await useValidatedBody(event, {
-    questionId: z
-      .number()
-      .min(1, { message: "Must have at least 1 character" }),
+    authorId: z.number().positive({ message: "Must be a positive number" }),
+    questionId: z.number().positive({ message: "Must be a positive number" }),
     text: z
       .string()
       .min(1, { message: "Must have at least 1 character" })
@@ -15,5 +14,5 @@ export default defineEventHandler(async (event) => {
 
   const { user } = await requireUserSession(event);
 
-  return await createAnswer(body, user.id);
+  return await createAnswer(body);
 });

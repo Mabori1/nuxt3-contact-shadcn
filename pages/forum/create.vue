@@ -14,6 +14,10 @@ import { ArrowLeft, CornerDownLeft, Eraser } from "lucide-vue-next";
 import { useForm } from "vee-validate";
 import * as z from "zod";
 
+useSeoMeta({
+  title: "Создание темы",
+});
+
 definePageMeta({
   middleware: "guest",
 });

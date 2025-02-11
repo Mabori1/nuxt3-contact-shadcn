@@ -15,6 +15,8 @@ const selectedQuestion = defineModel<number>("selectedQuestion", {
   required: false,
 });
 
+const { user, fetch: refreshSession } = useUserSession();
+
 function getBadgeVariantFromLabel(tag: string) {
   if (["Работа".toLowerCase()].includes(tag.toLowerCase())) return "default";
 
@@ -25,15 +27,37 @@ function getBadgeVariantFromLabel(tag: string) {
 function formatTags(tag: string) {
   return tag.trim().split(",");
 }
+
+async function toggleReadQuestion(id: number) {
+  if (!user.value?.readed.includes(id)) {
+    await readToggleQuestion(id);
+    await refreshSession();
+  }
+}
+
+const focusTimer = ref<NodeJS.Timeout | null>(null);
+
+const handleFocus = (question: IQuestion) => {
+  focusTimer.value = setTimeout(() => {
+    toggleReadQuestion(question.id);
+  }, 3000);
+};
+
+const handleBlur = () => {
+  if (focusTimer.value) {
+    clearTimeout(focusTimer.value);
+    focusTimer.value = null;
+  }
+};
 </script>
 
 <template>
-  <ScrollArea class="flex h-screen">
+  <ScrollArea class="flex h-full">
     <div v-if="items.length === 0" class="text-center text-2xl">
       Нет тем форума
     </div>
     <div v-else class="flex flex-1 flex-col gap-2 p-4 pt-0">
-      <TransitionGroup name="list" appear>
+      <TransitionGroup name="list" :key="items.length" appear>
         <button
           v-for="item of items"
           :key="item.id"
@@ -44,6 +68,8 @@ function formatTags(tag: string) {
             )
           "
           @click="selectedQuestion = item.id"
+          @focus="handleFocus(item)"
+          @blur="handleBlur"
         >
           <div class="flex w-full flex-col gap-1">
             <div class="flex items-center">
@@ -52,7 +78,7 @@ function formatTags(tag: string) {
                   {{ item.authorName }}
                 </div>
                 <span
-                  v-if="!item.read"
+                  v-if="!user?.readed.includes(item.id)"
                   class="flex h-2 w-2 rounded-full bg-blue-600"
                 />
               </div>

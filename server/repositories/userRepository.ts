@@ -1,5 +1,14 @@
 import prisma from "~/lib/prisma";
 import { IUser } from "~/types/IUser";
+//import { PrismaClient } from "@prisma/client";
+
+// const prisma = new PrismaClient({
+//   datasources: {
+//     db: {
+//       url: "file:./dev.db",
+//     },
+//   },
+// });
 
 export async function getUserByEmail(email: string) {
   return await prisma.user.findUnique({
@@ -29,6 +38,7 @@ export async function getUserById(id: number) {
 export async function getUser(email: string) {
   const existsUser = await prisma.user.findUnique({
     where: { email },
+    include: { readed: true },
   });
 
   if (!existsUser) throw new Error("User not found");
@@ -49,6 +59,9 @@ export async function createUser(user: IUser) {
       username: user.username,
       email: user.email,
       password: user.password,
+    },
+    include: {
+      readed: true,
     },
   });
 }

@@ -14,12 +14,19 @@ import { ArrowLeft, CornerDownLeft, Eraser } from "lucide-vue-next";
 import { useForm } from "vee-validate";
 import * as z from "zod";
 
+useSeoMeta({
+  title: "Обновление темы",
+});
+
 definePageMeta({
   middleware: "guest",
 });
 
+const question = useState<IQuestionPost>("updatedQuestion");
+
 const formSchema = toTypedSchema(
   z.object({
+    id: z.number(),
     title: z
       .string()
       .min(1, { message: "Must have at least 1 character" })
@@ -37,11 +44,17 @@ const formSchema = toTypedSchema(
 
 const { isFieldDirty, handleSubmit, resetForm } = useForm({
   validationSchema: formSchema,
+  initialValues: {
+    id: question.value?.id || 0,
+    title: question.value?.title || "",
+    tags: question.value?.tags || "",
+    description: question.value?.description || "",
+  },
 });
 
 const onSubmit = handleSubmit(async (values) => {
   useToastTitle().value = values.title;
-  await addQuestion(values);
+  await updateQuestion(values);
 });
 </script>
 

@@ -14,6 +14,11 @@ import { toTypedSchema } from "@vee-validate/zod";
 import { useForm } from "vee-validate";
 import * as z from "zod";
 import { toast } from "~/components/ui/toast";
+
+useSeoMeta({
+  title: "Авторизация",
+});
+
 const { fetch: refreshSession } = useUserSession();
 
 const passwordValidation = new RegExp(

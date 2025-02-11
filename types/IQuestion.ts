@@ -5,7 +5,6 @@ export interface IQuestion {
   title: string;
   description: string;
   date: Date;
-  read: boolean;
   tags: string;
   answers: IAnswer[];
 }
@@ -18,8 +17,10 @@ export interface IQuestionPost {
 }
 
 export interface IAnswer {
+  id?: number;
   text: string;
   authorId: number;
+  questionId: number;
   authorName?: string;
   date: Date;
 }
@@ -27,5 +28,6 @@ export interface IAnswer {
 export interface IAnswerPost {
   id?: number;
   text: string;
+  authorId: number;
   questionId: number;
 }

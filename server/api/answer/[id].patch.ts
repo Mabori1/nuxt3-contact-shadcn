@@ -7,9 +7,9 @@ export default defineEventHandler(async (event) => {
     id: zh.intAsString,
   });
   const answer: IAnswerPost = await useValidatedBody(event, {
-    questionId: z
-      .number()
-      .min(1, { message: "Must have at least 1 character" }),
+    id: z.number().positive({ message: "Must be a positive number" }),
+    authorId: z.number().positive({ message: "Must be a positive number" }),
+    questionId: z.number().positive({ message: "Must be a positive number" }),
     text: z
       .string()
       .min(1, { message: "Must have at least 1 character" })
@@ -18,7 +18,7 @@ export default defineEventHandler(async (event) => {
 
   const { user } = await requireUserSession(event);
 
-  const isMine = user.id == id;
+  const isMine = user.id == answer.authorId;
 
   if (!isMine) {
     sendError(

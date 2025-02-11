@@ -3,10 +3,7 @@ import { getUserById } from "~/server/repositories/userRepository";
 import { IAnswer, IQuestion } from "~/types/IQuestion";
 
 export default defineEventHandler(async (event) => {
-  await requireUserSession(event);
-
-  // List todos for the current user
-  // const todos = await useDB().select().from(tables.todos).where(eq(tables.todos.userId, user.id)).all()
+  // await requireUserSession(event);
 
   const questions: IQuestion[] | null = await findAllQuestions();
 

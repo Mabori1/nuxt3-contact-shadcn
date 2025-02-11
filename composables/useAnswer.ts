@@ -1,64 +1,62 @@
 import { toast } from "~/components/ui/toast";
 import type { IAnswerPost } from "~/types/IQuestion";
 
-export async function addNewAnswer(answer: IAnswerPost) {
-  const res = await $fetch<IAnswerPost>("/api/answer", {
-    method: "post",
-    body: answer,
-  });
+async function handleRequest(
+  url: string,
+  method: "patch" | "delete" | "post",
+  body: IQuestionPost | IQuestion | { questionId: number } | null,
+  successMessage: string,
+  errorMessage: string,
+  redirect: string | null = null,
+) {
+  const questions = useState<IQuestion[]>("questions");
+  let previousQuestions = questions.value;
 
-  if (!res) {
-    toast({
-      variant: "destructive",
-      title: `Ответ не создан, ${res}`,
-    });
-  } else {
-    toast({ title: "Ответ успешно создан" });
-    refreshNuxtData("questions");
-  }
+  return await $fetch(url, {
+    method,
+    body,
+    onRequest() {
+      previousQuestions = questions.value;
+      getQuestions().then(
+        (fetchedQuestions) => (questions.value = fetchedQuestions),
+      );
+      toast({ title: successMessage });
+      if (redirect) useRouter().push(redirect);
+    },
+    onResponseError() {
+      questions.value = previousQuestions;
+      toast({ variant: "destructive", title: errorMessage });
+    },
+    async onResponse() {},
+  });
 }
 
-export async function getAnswers(questionId: number) {
-  const answers = await $fetch<IAnswerPost[]>(`/api/answer/${questionId}`);
-
-  if (!answers) {
-    toast({
-      variant: "destructive",
-      title: "Ответы не получены",
-    });
-    return undefined;
-  }
-  return answers;
+export async function addAnswer(answer: IAnswerPost) {
+  return await handleRequest(
+    `/api/answer`,
+    "post",
+    answer,
+    `Ответ успешно создан`,
+    "Ответ не создан",
+  );
 }
 
-export async function updateAnswer(answer: IAnswerPost) {
-  const res = await $fetch<IAnswerPost>(`/api/answer/${answer.id}`, {
-    method: "patch",
-    body: answer,
-  });
-
-  if (!res) {
-    toast({
-      variant: "destructive",
-      title: `Текст не изменён, ${answer.text}`,
-    });
-  } else {
-    toast({ title: `Текст успешно изменён: ${res.text}` });
-  }
+export async function useUpdateAnswer(answer: IAnswerPost) {
+  return await handleRequest(
+    `/api/answer/${answer.id}`,
+    "patch",
+    answer,
+    "Ответ успешно обновлен",
+    "Ответ не обновлен.",
+  );
 }
 
-export async function deleteAnswer(answer: IAnswerPost) {
-  const res = await $fetch<IAnswerPost>(`/api/answer/${answer.id}`, {
-    method: "delete",
-    body: answer,
-  });
-
-  if (!res) {
-    toast({
-      variant: "destructive",
-      title: "Ответ не удалён.",
-    });
-  } else {
-    toast({ title: `Ответ успешно удалён.` });
-  }
+export async function removeAnswer(answer: IAnswerPost) {
+  return await handleRequest(
+    `/api/answer/${answer.id}`,
+    "delete",
+    answer,
+    "Ответ успешно удален",
+    "Ответ не удален.",
+  );
 }

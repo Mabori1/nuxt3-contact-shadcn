@@ -9,30 +9,23 @@ import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { refDebounced } from "@vueuse/core";
-import { Search } from "lucide-vue-next";
+import { CirclePlus, Search } from "lucide-vue-next";
 import type { IAnswer, IQuestion } from "~/types/IQuestion";
 import ForumDisplay from "./ForumDisplay.vue";
 import ForumList from "./ForumList.vue";
 
-interface QuestionProps {
-  questions: IQuestion[];
-  defaultLayout?: number[];
-}
+const questions = useState<IQuestion[]>("questions");
 
-const props = withDefaults(defineProps<QuestionProps>(), {
-  defaultLayout: () => [440, 655],
-});
-const selectedQuestion = ref<number | undefined>(props.questions[0].id);
+const selectedQuestion = ref<number | undefined>(questions.value[0].id);
 const searchValue = ref("");
 const debouncedSearch = refDebounced(searchValue, 250);
-console.log("searchValue: ", searchValue.value);
 const filteredQuestionList = computed(() => {
   let output: IQuestion[] = [];
   const searchValue = debouncedSearch.value?.trim();
   if (!searchValue) {
-    output = props.questions;
+    output = questions.value;
   } else {
-    output = props.questions.filter((item) => {
+    output = questions.value.filter((item) => {
       return (
         item.authorName?.includes(debouncedSearch.value) ||
         item.title.includes(debouncedSearch.value) ||
@@ -48,22 +41,24 @@ const filteredQuestionList = computed(() => {
   return output;
 });
 
+const { user } = useUserSession();
+
 const unreadQuestionList = computed(() =>
-  filteredQuestionList.value.filter((item) => !item.read),
+  filteredQuestionList.value.filter(
+    (item) => !user.value?.readed.includes(item.id),
+  ),
 );
 
 const selectedQuestionData = computed(() => {
-  if (props.questions.length !== 0) {
-    return props.questions.find((item) => item.id === selectedQuestion.value);
+  if (questions.value.length !== 0) {
+    return questions.value.find((item) => item.id === selectedQuestion.value);
   }
   return undefined;
 });
 
-const emit = defineEmits(["remove-question"]);
-
-const removeQuestion = (id: number) => {
-  emit("remove-question", id);
-};
+watch(questions, async () => {
+  useState<IQuestion[]>("questions").value = await getQuestions();
+});
 </script>
 
 <template>
@@ -75,9 +70,28 @@ const removeQuestion = (id: number) => {
     >
       <ResizablePanel id="resize-panel-2" :min-size="30">
         <Tabs default-value="all">
-          <div class="flex items-center px-4 py-2">
+          <div class="flex items-center justify-between px-4 py-2">
             <h1 class="text-xl font-bold">Форум</h1>
-            <TabsList class="ml-auto">
+
+            <div class="flex items-center">
+              <Separator orientation="vertical" class="mx-1 h-6" />
+              <Tooltip>
+                <TooltipTrigger as-child>
+                  <Button
+                    @click="navigateTo('/forum/create')"
+                    variant="ghost"
+                    size="icon"
+                  >
+                    <CirclePlus class="size-8" />
+                    <span class="sr-only">Создать тему форума</span>
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Создать тему форума</TooltipContent>
+              </Tooltip>
+
+              <Separator orientation="vertical" class="mx-1 h-6" />
+            </div>
+            <TabsList>
               <TabsTrigger value="all" class="text-zinc-600 dark:text-zinc-200">
                 All Questions
               </TabsTrigger>
@@ -123,10 +137,7 @@ const removeQuestion = (id: number) => {
       </ResizablePanel>
       <ResizableHandle id="resiz-handle-2" with-handle />
       <ResizablePanel id="resize-panel-3">
-        <ForumDisplay
-          :question="selectedQuestionData"
-          @remove-question="removeQuestion"
-        />
+        <ForumDisplay :question="selectedQuestionData" />
       </ResizablePanel>
     </ResizablePanelGroup>
   </TooltipProvider>

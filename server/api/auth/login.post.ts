@@ -28,6 +28,7 @@ export default defineEventHandler(async (event) => {
         id: existsUser.id,
         username: existsUser.username,
         email: existsUser.email,
+        readed: existsUser.readed.map((item) => item.questionId),
       },
     });
     return {};

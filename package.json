@@ -3,11 +3,12 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "nuxt build",
+    "build": "nuxt build && copy .\\prisma\\dev.db .\\.output\\server\\node_modules\\.prisma\\client\\dev.db",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "start": "node --env-file=.env .output/server/index.mjs"
   },
   "dependencies": {
     "@nuxtjs/color-mode": "^3.5.2",
