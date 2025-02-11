@@ -7,7 +7,7 @@ generator client {
 
 datasource db {
   provider = "sqlite"
-  url      = "file:./dev.db"
+  url      = env("DATABASE_URL")
 }
 
 model User {
@@ -18,6 +18,7 @@ model User {
   contacts Contact[]
   question Question[]
   answer   Answer[]
+  readed   ReadedQuestion[]
 }
 
 
@@ -39,9 +40,15 @@ model Question {
   title       String   @unique
   description String
   date        DateTime @default(now())
-  read        Boolean  @default(false)
   tags        String
   answers     Answer[]
+}
+
+model ReadedQuestion {
+  id          Int      @id @default(autoincrement())
+  user        User     @relation(fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  userId      Int
+  questionId  Int      @unique
 }
 
 model Answer {

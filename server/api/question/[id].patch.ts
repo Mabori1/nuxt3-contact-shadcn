@@ -7,6 +7,7 @@ export default defineEventHandler(async (event) => {
     id: zh.intAsString,
   });
   const question: IQuestionPost = await useValidatedBody(event, {
+    id: z.number(),
     title: z
       .string()
       .min(1, { message: "Must have at least 1 character" })

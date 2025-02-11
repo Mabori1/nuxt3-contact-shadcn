@@ -1,5 +1,5 @@
-import prisma from "~/lib/prisma";
 import { IAnswerPost, IQuestion, IQuestionPost } from "~/types/IQuestion";
+import prisma from "~/lib/prisma";
 
 export async function createQuestion(data: IQuestionPost, authorId: number) {
   return await prisma.question.create({
@@ -29,15 +29,39 @@ export async function findQuestion(id: number): Promise<IQuestion> {
   return question;
 }
 
-export async function toggleReadQuestion(id: number, isRead: boolean) {
-  await prisma.question.update({
-    where: {
-      id: id,
-    },
-    data: {
-      read: isRead,
-    },
-  });
+export async function toggleReadQuestion(userId: number, questionId: number) {
+  // Запрашиваем список всех существующих вопросов и все вопросы, прочитанные пользователем
+  const [questionIds, userAllReads] = await Promise.all([
+    prisma.question.findMany({ select: { id: true } }),
+    prisma.readedQuestion.findMany({
+      where: { userId },
+      select: { questionId: true },
+    }),
+  ]);
+
+  // Создаем множества для быстрого поиска ID вопросов
+  const validQuestionIds = new Set(questionIds.map((q) => q.id)); // Список существующих вопросов
+  const userReadIds = new Set(userAllReads.map((r) => r.questionId)); // Список прочитанных пользователем
+
+  // Определяем ID вопросов, которые есть у пользователя, но больше не существуют в базе
+  const invalidIds = userAllReads
+    .map((r) => r.questionId)
+    .filter((id) => !validQuestionIds.has(id));
+
+  // Удаляем записи о прочитанных вопросах, если эти вопросы больше не существуют
+  if (invalidIds.length) {
+    await prisma.readedQuestion.deleteMany({
+      where: { userId, questionId: { in: invalidIds } },
+    });
+  }
+
+  // Если вопрос уже был прочитан, удаляем его из списка прочитанных
+  if (userReadIds.has(questionId)) {
+    await prisma.readedQuestion.delete({ where: { userId, questionId } });
+  } else {
+    // В противном случае, помечаем вопрос как прочитанный
+    await prisma.readedQuestion.create({ data: { userId, questionId } });
+  }
 }
 
 export async function findAllQuestions(): Promise<IQuestion[] | null> {

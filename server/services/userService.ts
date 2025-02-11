@@ -71,11 +71,3 @@ export async function doesNotUserExists(email: string): Promise<existsCheck> {
     value: false,
   };
 }
-
-export function sanitizeUserForFrontend(user: IUser) {
-  if (!user) throw new Error("User not found, userservice");
-
-  delete user.password;
-
-  return user;
-}

@@ -38,7 +38,7 @@ import {
 import { useForm } from "vee-validate";
 import { computed } from "vue";
 import * as z from "zod";
-import type { IQuestion } from "~/types/IQuestion";
+import type { IQuestion, IQuestionPost } from "~/types/IQuestion";
 
 interface QuestionDisplayProps {
   question: IQuestion | undefined;
@@ -78,6 +78,19 @@ const onSubmit = form.handleSubmit(async (values) => {
   }
 });
 const resetform = form.resetForm;
+
+const updateCurrentQuestion = (question: IQuestionPost) => {
+  useNuxtData<IQuestionPost>("updatedQuestion").data.value = question;
+  navigateTo("/forum/update"); // Переход на страницу редактирования
+};
+
+const { fetch: refreshSession } = useUserSession();
+
+async function toggleReadQuestion(id: number) {
+  await readToggleQuestion(id);
+  await refreshSession();
+  console.log("yes2");
+}
 </script>
 
 <template>
@@ -88,7 +101,7 @@ const resetform = form.resetForm;
         <Tooltip>
           <TooltipTrigger as-child>
             <Button
-              @click="question && removeQuestion(question.id)"
+              @click="question && updateCurrentQuestion(question)"
               variant="ghost"
               size="icon"
               :disabled="!question"
@@ -97,7 +110,7 @@ const resetform = form.resetForm;
               <span class="sr-only">Редактировать тему форума</span>
             </Button>
           </TooltipTrigger>
-          <TooltipContent>Удалить тему форума</TooltipContent>
+          <TooltipContent>Редактировать тему форума</TooltipContent>
         </Tooltip>
         <Separator orientation="vertical" class="mx-1 h-6" />
         <Tooltip>
@@ -201,7 +214,9 @@ const resetform = form.resetForm;
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem>Mark as unread</DropdownMenuItem>
+          <DropdownMenuItem @click="question && toggleReadQuestion(question.id)"
+            >Mark as unread</DropdownMenuItem
+          >
           <DropdownMenuItem>Star thread</DropdownMenuItem>
           <DropdownMenuItem>Add label</DropdownMenuItem>
           <DropdownMenuItem>Mute thread</DropdownMenuItem>
@@ -220,9 +235,6 @@ const resetform = form.resetForm;
           <div class="grid gap-1">
             <div class="font-semibold">
               {{ question.title }}
-            </div>
-            <div class="">
-              {{ question.description }}
             </div>
             <div class="line-clamp-1 text-xs">
               <span class="font-medium">Автор :</span>

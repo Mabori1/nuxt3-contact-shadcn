@@ -5,7 +5,6 @@ export interface IQuestion {
   title: string;
   description: string;
   date: Date;
-  read: boolean;
   tags: string;
   answers: IAnswer[];
 }

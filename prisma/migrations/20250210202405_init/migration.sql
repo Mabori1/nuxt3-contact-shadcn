@@ -25,9 +25,16 @@ CREATE TABLE "Question" (
     "title" TEXT NOT NULL,
     "description" TEXT NOT NULL,
     "date" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "read" BOOLEAN NOT NULL DEFAULT false,
     "tags" TEXT NOT NULL,
     CONSTRAINT "Question_authorId_fkey" FOREIGN KEY ("authorId") REFERENCES "User" ("id") ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+-- CreateTable
+CREATE TABLE "ReadedQuestion" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "userId" INTEGER NOT NULL,
+    "questionId" INTEGER NOT NULL,
+    CONSTRAINT "ReadedQuestion_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User" ("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- CreateTable
@@ -52,3 +59,6 @@ CREATE UNIQUE INDEX "Contact_email_key" ON "Contact"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Question_title_key" ON "Question"("title");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "ReadedQuestion_questionId_key" ON "ReadedQuestion"("questionId");

@@ -9,7 +9,7 @@ import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { refDebounced } from "@vueuse/core";
-import { Search } from "lucide-vue-next";
+import { CirclePlus, Search } from "lucide-vue-next";
 import type { IAnswer, IQuestion } from "~/types/IQuestion";
 import ForumDisplay from "./ForumDisplay.vue";
 import ForumList from "./ForumList.vue";
@@ -25,7 +25,6 @@ const props = withDefaults(defineProps<QuestionProps>(), {
 const selectedQuestion = ref<number | undefined>(props.questions[0].id);
 const searchValue = ref("");
 const debouncedSearch = refDebounced(searchValue, 250);
-console.log("searchValue: ", searchValue.value);
 const filteredQuestionList = computed(() => {
   let output: IQuestion[] = [];
   const searchValue = debouncedSearch.value?.trim();
@@ -48,8 +47,12 @@ const filteredQuestionList = computed(() => {
   return output;
 });
 
+const { user } = useUserSession();
+
 const unreadQuestionList = computed(() =>
-  filteredQuestionList.value.filter((item) => !item.read),
+  filteredQuestionList.value.filter(
+    (item) => !user.value?.readed.includes(item.id),
+  ),
 );
 
 const selectedQuestionData = computed(() => {
@@ -75,9 +78,28 @@ const removeQuestion = (id: number) => {
     >
       <ResizablePanel id="resize-panel-2" :min-size="30">
         <Tabs default-value="all">
-          <div class="flex items-center px-4 py-2">
+          <div class="flex items-center justify-between px-4 py-2">
             <h1 class="text-xl font-bold">Форум</h1>
-            <TabsList class="ml-auto">
+
+            <div class="flex items-center">
+              <Separator orientation="vertical" class="mx-1 h-6" />
+              <Tooltip>
+                <TooltipTrigger as-child>
+                  <Button
+                    @click="navigateTo('/forum/create')"
+                    variant="ghost"
+                    size="icon"
+                  >
+                    <CirclePlus class="size-8" />
+                    <span class="sr-only">Создать тему форума</span>
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Создать тему форума</TooltipContent>
+              </Tooltip>
+
+              <Separator orientation="vertical" class="mx-1 h-6" />
+            </div>
+            <TabsList>
               <TabsTrigger value="all" class="text-zinc-600 dark:text-zinc-200">
                 All Questions
               </TabsTrigger>

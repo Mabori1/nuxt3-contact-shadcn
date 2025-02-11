@@ -25,10 +25,16 @@ export default defineNuxtConfig({
       },
     },
   },
+
+  imports: {
+    dirs: ["./types"],
+  },
   nitro: {
     externals: {
       traceInclude: ["node_modules/nopt/lib/nopt.js"],
     },
+    imports: {
+      dirs: ["./types"],
+    },
   },
 });
-
