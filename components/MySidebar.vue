@@ -25,6 +25,10 @@ onMounted(() => {
   hideSidebar.value = isMobile.value;
 });
 
+watch(isMobile, (value) => {
+  hideSidebar.value = value;
+});
+
 const questions = useState<IQuestion[]>("questions");
 const countQuestions = ref<number | undefined>(questions.value?.length);
 

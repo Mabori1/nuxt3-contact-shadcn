@@ -66,6 +66,9 @@ const formSchema = toTypedSchema(
   }),
 );
 
+const textareaRef = ref<HTMLTextAreaElement | null>(null);
+const scrollAreaRef = ref<HTMLDivElement | null>(null);
+
 const form = useForm({
   validationSchema: formSchema,
 });
@@ -73,11 +76,12 @@ const form = useForm({
 const isUpdatedAnswer = ref(false);
 let idUpdatedAnswer: number | undefined = undefined;
 
-function onEditAnswer(answer: IAnswerPost) {
+async function onEditAnswer(answer: IAnswerPost) {
+  await nextTick();
   if (!user.value || user.value.id !== answer.authorId) {
     toast({
       variant: "destructive",
-      title: "Вы не можете редактировать чужой ответ",
+      title: "Вы не можете редактировать чужой ответ",
     });
     return;
   }
@@ -86,6 +90,16 @@ function onEditAnswer(answer: IAnswerPost) {
   form.setValues({
     text: answer.text,
   });
+  if (textareaRef.value && scrollAreaRef.value) {
+    // Доступ к реальному DOM-элементу внутри ScrollArea
+
+    scrollAreaRef.value.scroll({
+      top: textareaRef.value.offsetHeight,
+      behavior: "smooth",
+    });
+
+    textareaRef.value.focus();
+  }
 }
 function onCanseled() {
   isUpdatedAnswer.value = false;
@@ -279,8 +293,8 @@ async function deleteQuestion(id: number) {
     </div>
     <Separator />
     <div v-if="question" class="flex flex-1 flex-col">
-      <div class="flex items-start p-4">
-        <div class="flex items-start gap-4 text-sm">
+      <div class="flex flex-col items-start gap-2 p-4 md:flex-row">
+        <div class="flex flex-col items-start gap-4 text-sm md:flex-row">
           <Avatar>
             <AvatarFallback>
               {{ questionFallbackName }}
@@ -288,7 +302,7 @@ async function deleteQuestion(id: number) {
           </Avatar>
           <div class="grid gap-1">
             <div class="font-semibold">
-              {{ question.title }}
+              title: {{ question.title.substring(0, 20) }}
             </div>
             <div class="line-clamp-1 text-xs">
               <span class="font-medium">Автор :</span>
@@ -296,7 +310,10 @@ async function deleteQuestion(id: number) {
             </div>
           </div>
         </div>
-        <div v-if="question.date" class="ml-auto text-xs text-muted-foreground">
+        <div
+          v-if="question.date"
+          class="text-xs text-muted-foreground md:ml-auto"
+        >
           {{ format(new Date(question.date), "PPpp", { locale: ru }) }}
         </div>
       </div>
@@ -305,12 +322,12 @@ async function deleteQuestion(id: number) {
         <p class="ml-2 py-4">{{ question.description }}</p>
         <Separator />
 
-        <ScrollArea class="flex h-[67vh]">
+        <ScrollArea ref="scrollAreaRef" class="flex h-[67vh]">
           <div class="flex flex-col">
             <Card
               v-for="answer in question.answers"
               :key="answer.date.toString()"
-              class="m-2 py-1 hover:bg-accent/20 focus:bg-muted/35"
+              class="m-2 mx-auto w-[95%] py-1 hover:bg-accent/20 focus:bg-muted/35"
             >
               <CardHeader
                 >Ответ от: {{ answer.authorName }}
@@ -355,7 +372,10 @@ async function deleteQuestion(id: number) {
                     Создать ответ
                     <CornerDownLeft class="size-3.5" />
                   </Button>
-                  <div v-else class="ml-auto flex gap-4">
+                  <div
+                    v-else
+                    class="flex flex-col items-center justify-center gap-4 md:ml-auto md:flex-row"
+                  >
                     <Button
                       type="text"
                       @click="onCanseled"

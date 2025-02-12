@@ -72,7 +72,7 @@ const handleBlur = () => {
           @blur="handleBlur"
         >
           <div class="flex w-full flex-col gap-1">
-            <div class="flex items-center">
+            <div class="flex flex-col items-center gap-2 md:flex-row">
               <div class="flex items-center gap-2">
                 <div class="font-semibold">
                   {{ item.authorName }}
@@ -108,7 +108,7 @@ const handleBlur = () => {
           <div class="line-clamp-2 text-xs text-muted-foreground">
             {{ item.description.substring(0, 100) + "..." }}
           </div>
-          <div class="flex items-center gap-2">
+          <div class="flex flex-wrap items-center justify-center gap-2">
             <Badge
               v-for="(tag, idx) of formatTags(item.tags)"
               :key="`tag${idx}`"

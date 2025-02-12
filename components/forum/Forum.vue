@@ -71,7 +71,7 @@ watch(questions, async () => {
       <ResizablePanel id="resize-panel-2" :min-size="30">
         <Tabs default-value="all">
           <div class="flex items-center justify-between px-4 py-2">
-            <h1 class="text-xl font-bold">Форум</h1>
+            <h1 class="hidden text-xl font-bold md:block">Форум</h1>
 
             <div class="flex items-center">
               <Separator orientation="vertical" class="mx-1 h-6" />
@@ -91,7 +91,7 @@ watch(questions, async () => {
 
               <Separator orientation="vertical" class="mx-1 h-6" />
             </div>
-            <TabsList>
+            <TabsList class="flex flex-col md:flex-row">
               <TabsTrigger value="all" class="text-zinc-600 dark:text-zinc-200">
                 All Questions
               </TabsTrigger>

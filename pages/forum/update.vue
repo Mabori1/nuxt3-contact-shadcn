@@ -60,12 +60,12 @@ const onSubmit = handleSubmit(async (values) => {
 
 <template>
   <div class="mx-4 flex h-screen items-center justify-center">
-    <Card class="h-auto w-1/2">
+    <Card class="h-auto w-full md:w-4/5 xl:w-1/2">
       <CardHeader class="space-y-1">
         <CardTitle class="text-2xl"> Создание темы форума </CardTitle>
       </CardHeader>
-      <CardContent class="grid gap-2">
-        <form class="items-center space-y-6" @submit="onSubmit">
+      <CardContent class="flex gap-1 md:gap-2">
+        <form class="w-full items-center space-y-6" @submit="onSubmit">
           <FormField
             v-slot="{ componentField }"
             name="title"
@@ -117,7 +117,7 @@ const onSubmit = handleSubmit(async (values) => {
                   <Textarea
                     id="message"
                     placeholder="Описание темы форума..."
-                    class="min-h-32 resize-none border-0 p-3 shadow-none focus-visible:ring-0"
+                    class="min-h-32 w-full resize-none border-0 p-3 shadow-none focus-visible:ring-0"
                     v-bind="componentField"
                   />
                 </div>
@@ -126,16 +126,18 @@ const onSubmit = handleSubmit(async (values) => {
             </FormItem>
           </FormField>
 
-          <div class="flex items-center gap-2.5 p-3 pt-0">
-            <Button @click="$router.back()" class="ml-auto mt-1 gap-1.5">
+          <div
+            class="flex flex-wrap items-center justify-center gap-2.5 p-3 pt-0"
+          >
+            <Button @click="$router.back()" class="mt-1 gap-1.5">
               Отмена
               <ArrowLeft class="size-3.5" />
             </Button>
-            <Button @click="resetForm" class="mx-3 mt-1 gap-1.5">
+            <Button @click="resetForm" class="mt-1 gap-1.5 md:mx-3">
               Сброс
               <Eraser class="size-3.5" />
             </Button>
-            <Button type="submit" size="sm" class="mr-3 mt-1 gap-1.5">
+            <Button type="submit" size="sm" class="mt-1 gap-1.5 md:mr-3">
               Сохранить
               <CornerDownLeft class="size-3.5" />
             </Button>
