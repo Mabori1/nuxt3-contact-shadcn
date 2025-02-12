@@ -1,8 +1,6 @@
 <script setup lang="ts">
-import { useState } from "#app";
-
 type Theme = "light" | "dark";
-const user = useState("user");
+
 const setColorTheme = (newTheme: Theme) => {
   useColorMode().preference = newTheme;
 };
