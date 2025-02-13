@@ -22,6 +22,14 @@ npm install
 
 ## Создать файл .env (можно переименовать .env.example)
 
+## Создать миграцию базы данных
+
+```bash
+
+npx prisma migrate dev --name init
+npx prisma db push
+```
+
 ## Запустить приложение в режиме разработчика
 
 Start the development server on `http://localhost:3010`:
@@ -38,7 +46,9 @@ Build the application for production:
 
 ```bash
 # npm
-npm run build
+npm run build:win
+or
+npm run build:linux
 
 ```
 
