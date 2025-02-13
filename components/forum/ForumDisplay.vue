@@ -67,7 +67,7 @@ const formSchema = toTypedSchema(
 );
 
 const textareaRef = ref<HTMLTextAreaElement | null>(null);
-const scrollAreaRef = ref<HTMLDivElement | null>(null);
+const viewportRef = ref<HTMLElement | null>(null);
 
 const form = useForm({
   validationSchema: formSchema,
@@ -90,17 +90,26 @@ async function onEditAnswer(answer: IAnswerPost) {
   form.setValues({
     text: answer.text,
   });
-  if (textareaRef.value && scrollAreaRef.value) {
-    // Доступ к реальному DOM-элементу внутри ScrollArea
 
-    scrollAreaRef.value.scroll({
-      top: textareaRef.value.offsetHeight,
+  const scrollAreaRef = document.getElementById("scroll-area");
+
+  if (scrollAreaRef) {
+    viewportRef.value = scrollAreaRef.getElementsByClassName(
+      "relative h-full w-full overflow-hidden",
+    )[0] as HTMLElement;
+
+    textareaRef.value = scrollAreaRef.querySelector(
+      "#message",
+    ) as HTMLTextAreaElement;
+
+    viewportRef.value?.scrollTo({
+      top: textareaRef.value.offsetTop,
       behavior: "smooth",
     });
-
     textareaRef.value.focus();
   }
 }
+
 function onCanseled() {
   isUpdatedAnswer.value = false;
   idUpdatedAnswer = undefined;
@@ -322,7 +331,7 @@ async function deleteQuestion(id: number) {
         <p class="ml-2 py-4">{{ question.description }}</p>
         <Separator />
 
-        <ScrollArea ref="scrollAreaRef" class="flex h-[67vh]">
+        <ScrollArea id="scroll-area" class="flex h-[67vh] overflow-auto">
           <div class="flex flex-col">
             <Card
               v-for="answer in question.answers"
