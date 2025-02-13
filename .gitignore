@@ -24,4 +24,4 @@ logs
 !.env.example
 
 # db file
-.dev.db
+dev.db
