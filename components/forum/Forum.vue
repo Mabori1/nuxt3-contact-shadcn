@@ -41,11 +41,11 @@ const filteredQuestionList = computed(() => {
   return output;
 });
 
-const { user } = useUserSession();
+const readUserArray = useState<number[]>("readQuestion");
 
 const unreadQuestionList = computed(() =>
   filteredQuestionList.value.filter(
-    (item) => !user.value?.readed.includes(item.id),
+    (item) => !readUserArray.value.includes(item.id),
   ),
 );
 
@@ -57,7 +57,12 @@ const selectedQuestionData = computed(() => {
 });
 
 watch(questions, async () => {
-  useState<IQuestion[]>("questions").value = await getQuestions();
+  questions.value = await getQuestions();
+});
+
+onMounted(async () => {
+  questions.value = await getQuestions();
+  readUserArray.value = await getReadQuestions();
 });
 </script>
 

@@ -59,6 +59,7 @@ const questionFallbackName = computed(() => {
 
 const today = new Date();
 const { user } = useUserSession();
+const readUserArray = useState<number[]>("readQuestion");
 
 const formSchema = toTypedSchema(
   z.object({
@@ -154,11 +155,8 @@ const updateCurrentQuestion = (question: IQuestionPost) => {
   navigateTo("/forum/update"); // Переход на страницу редактирования
 };
 
-const { fetch: refreshSession } = useUserSession();
-
 async function toggleReadQuestion(id: number) {
-  await readToggleQuestion(id);
-  await refreshSession();
+  readUserArray.value = await readToggleQuestion(id);
 }
 
 async function delAnswer(answer: IAnswerPost) {

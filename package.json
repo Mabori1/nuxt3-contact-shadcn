@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "build:win": "nuxt build && copy .\\prisma\\dev.db .\\.output\\server\\node_modules\\.prisma\\client\\dev.db",
-    "build:linux": "nuxt build && cp .\\prisma\\dev.db .\\.output\\server\\node_modules\\.prisma\\client\\dev.db",
+    "build:linux": "nuxt build && cp ./prisma/dev.db ./.output/server/node_modules/.prisma/client/dev.db",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",

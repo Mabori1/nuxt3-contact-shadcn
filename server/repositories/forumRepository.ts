@@ -57,7 +57,9 @@ export async function toggleReadQuestion(userId: number, questionId: number) {
 
   // Если вопрос уже был прочитан, удаляем его из списка прочитанных
   if (userReadIds.has(questionId)) {
-    await prisma.readedQuestion.delete({ where: { userId, questionId } });
+    await prisma.readedQuestion.deleteMany({
+      where: { AND: [{ userId }, { questionId }] },
+    });
   } else {
     // В противном случае, помечаем вопрос как прочитанный
     await prisma.readedQuestion.create({ data: { userId, questionId } });

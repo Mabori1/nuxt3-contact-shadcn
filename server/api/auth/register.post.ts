@@ -55,7 +55,7 @@ export default defineEventHandler(async (event) => {
         id: user.id,
         username: user.username,
         email: user.email,
-        readed: user.readed.map((item) => item.questionId),
+        readed: [],
       },
     });
   }

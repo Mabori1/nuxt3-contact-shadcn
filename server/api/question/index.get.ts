@@ -3,7 +3,7 @@ import { getUserById } from "~/server/repositories/userRepository";
 import { IAnswer, IQuestion } from "~/types/IQuestion";
 
 export default defineEventHandler(async (event) => {
-  // await requireUserSession(event);
+  //  await requireUserSession(event);
 
   const questions: IQuestion[] | null = await findAllQuestions();
 
@@ -26,11 +26,11 @@ export default defineEventHandler(async (event) => {
       );
 
       // Получаем имя автора вопроса
-      const user = await getUserById(question.authorId);
+      const autorQuestion = await getUserById(question.authorId);
 
       return {
         ...question,
-        authorName: `@${user.username}`,
+        authorName: `@${autorQuestion.username}`,
         answers: updatedAnswers,
       };
     }),

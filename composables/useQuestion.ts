@@ -7,6 +7,9 @@ export async function useQuestions() {
   );
   return data.value;
 }
+export async function getReadQuestions() {
+  return await $fetch<number[]>("/api/question/read");
+}
 
 export async function getQuestions() {
   return await $fetch<IQuestion[]>("/api/question");

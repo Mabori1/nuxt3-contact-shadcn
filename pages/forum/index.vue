@@ -14,6 +14,7 @@ const questions = useState<IQuestion[]>("questions");
 
 onMounted(async () => {
   questions.value = await getQuestions();
+  // useState<number[]>("readQuestion").value = await getReadQuestions();
 });
 </script>
 <template>

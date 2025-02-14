@@ -59,6 +59,3 @@ CREATE UNIQUE INDEX "Contact_email_key" ON "Contact"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Question_title_key" ON "Question"("title");
-
--- CreateIndex
-CREATE UNIQUE INDEX "ReadedQuestion_questionId_key" ON "ReadedQuestion"("questionId");

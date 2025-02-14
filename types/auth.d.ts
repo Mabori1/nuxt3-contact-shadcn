@@ -3,7 +3,6 @@ declare module "#auth-utils" {
     id: number;
     username: string;
     email: string;
-    readed: number[];
   }
 }
 export {};

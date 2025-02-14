@@ -11,16 +11,15 @@ datasource db {
 }
 
 model User {
-  id       Int        @id @default(autoincrement())
-  email    String     @unique
-  username String     @unique
+  id       Int              @id @default(autoincrement())
+  email    String           @unique
+  username String           @unique
   password String
   contacts Contact[]
   question Question[]
   answer   Answer[]
   readed   ReadedQuestion[]
 }
-
 
 model Contact {
   id        Int      @id @default(autoincrement())
@@ -45,10 +44,10 @@ model Question {
 }
 
 model ReadedQuestion {
-  id          Int      @id @default(autoincrement())
-  user        User     @relation(fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-  userId      Int
-  questionId  Int      @unique
+  id         Int  @id @default(autoincrement())
+  user       User @relation(fields: [userId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  userId     Int
+  questionId Int
 }
 
 model Answer {

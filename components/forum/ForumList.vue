@@ -15,26 +15,36 @@ const selectedQuestion = defineModel<number>("selectedQuestion", {
   required: false,
 });
 
-const { user, fetch: refreshSession } = useUserSession();
+const readUserArray = useState<number[]>("readQuestion");
+
+const isUnread = computed(() => (id: number) => {
+  if (readUserArray.value) {
+    return !readUserArray.value.includes(id);
+  }
+  return false;
+});
 
 function getBadgeVariantFromLabel(tag: string) {
-  if (["Работа".toLowerCase()].includes(tag.toLowerCase())) return "default";
-
-  if (["Хобби".toLowerCase()].includes(tag.toLowerCase())) return "destructive";
-
-  return "secondary";
+  switch (tag.toLowerCase()) {
+    case "Вопрос".toLowerCase():
+      return "question";
+    case "Работа".toLowerCase():
+      return "default";
+    case "Ошибка".toLowerCase():
+      return "destructive";
+    default:
+      return "secondary";
+  }
 }
 function formatTags(tag: string) {
-  return tag.trim().split(",");
+  return tag.split(",").map((t) => t.trim());
 }
 
 async function toggleReadQuestion(id: number) {
-  if (!user.value?.readed.includes(id)) {
-    await readToggleQuestion(id);
-    await refreshSession();
+  if (!readUserArray.value.includes(id)) {
+    useState("readQuestion").value = await readToggleQuestion(id);
   }
 }
-
 const focusTimer = ref<NodeJS.Timeout | null>(null);
 
 const handleFocus = (question: IQuestion) => {
@@ -49,6 +59,10 @@ const handleBlur = () => {
     focusTimer.value = null;
   }
 };
+
+onMounted(async () => {
+  readUserArray.value = await getReadQuestions();
+});
 </script>
 
 <template>
@@ -78,7 +92,7 @@ const handleBlur = () => {
                   {{ item.authorName }}
                 </div>
                 <span
-                  v-if="!user?.readed.includes(item.id)"
+                  v-if="isUnread(item.id)"
                   class="flex h-2 w-2 rounded-full bg-blue-600"
                 />
               </div>
