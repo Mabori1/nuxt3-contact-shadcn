@@ -6,15 +6,14 @@ useSeoMeta({
   title: "Форум",
 });
 
-definePageMeta({
-  middleware: ["guest"],
-});
+// definePageMeta({
+//   middleware: ["guest"],
+// });
 
 const questions = useState<IQuestion[]>("questions");
 
 onMounted(async () => {
   questions.value = await getQuestions();
-  // useState<number[]>("readQuestion").value = await getReadQuestions();
 });
 </script>
 <template>
